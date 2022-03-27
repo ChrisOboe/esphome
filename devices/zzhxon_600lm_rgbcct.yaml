@@ -1,0 +1,39 @@
+<<: !include ../common.yaml
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: build/${name}
+  arduino_version: 3.0.2
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO04
+    id: pwm_cw
+  - platform: esp8266_pwm
+    pin: GPIO05
+    id: pwm_ww
+  - platform: esp8266_pwm
+    pin: GPIO12
+    id: pwm_green
+  - platform: esp8266_pwm
+    pin: GPIO13
+    id: pwm_blue
+  - platform: esp8266_pwm
+    pin: GPIO14
+    id: pwm_red
+
+light:
+  - platform: rgbww
+    id: ${name}_light
+    name: ${name}_light
+    red: pwm_red
+    green: pwm_green
+    blue: pwm_blue
+    cold_white: pwm_cw
+    warm_white: pwm_ww
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
+    # constant_brightness: true
+    color_interlock: true

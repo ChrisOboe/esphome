@@ -1,0 +1,7 @@
+substitutions:
+  location: TEST
+  location_l: test
+
+<<: !include .kendo.yaml
+
+<<: !include .shelly_touch.yaml

@@ -1,0 +1,7 @@
+substitutions:
+  name: kueche_decke
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/shelly.yaml
+<<: !include ../devices/shelly_light.yaml
+<<: !include ../devices/shelly_switch.yaml

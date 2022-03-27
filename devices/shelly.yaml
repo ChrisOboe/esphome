@@ -1,0 +1,12 @@
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: ../build/${name}
+
+<<: !include ../common.yaml
+
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4

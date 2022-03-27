@@ -1,0 +1,5 @@
+substitutions:
+  name: aussen_tisch
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/bklicht_bkl1253.yaml

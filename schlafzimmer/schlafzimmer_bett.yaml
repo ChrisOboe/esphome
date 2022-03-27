@@ -1,0 +1,5 @@
+substitutions:
+  name: schlafzimmer_bett
+
+<<: !include ../wifi_kendo.yaml
+<<: !include ../devices/teckin_sb50.yaml

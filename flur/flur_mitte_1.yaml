@@ -1,0 +1,5 @@
+substitutions:
+  name: flur_mitte_1
+
+<<: !include ../wifi_kendo.yaml
+<<: !include ../devices/zzhxon_600lm_rgbcct.yaml

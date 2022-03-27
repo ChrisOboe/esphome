@@ -1,0 +1,7 @@
+substitutions:
+  name: schlafzimmer_schalter_bett
+
+<<: !include ../wifi_kendo.yaml
+<<: !include ../devices/shelly.yaml
+<<: !include ../devices/shelly_switch.yaml
+

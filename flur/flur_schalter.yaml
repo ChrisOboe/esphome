@@ -1,0 +1,41 @@
+substitutions:
+  name: flur_schalter
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/shelly.yaml
+<<: !include ../devices/shelly_light.yaml
+
+binary_sensor:
+  - platform: template
+    name: ${name} Schalter
+    id: ${name}_switch
+
+  - platform: gpio
+    id: ${name}_button
+    internal: true
+    pin:
+      number: GPIO5
+
+    on_click:
+      - min_length: 30ms
+        max_length: 2000ms
+        then:
+          - if:
+              condition:
+                api.connected:
+              then:
+                - if:
+                    condition:
+                      binary_sensor.is_on: ${name}_switch
+                    then:
+                      - binary_sensor.template.publish:
+                          id: ${name}_switch
+                          state: OFF
+                    else:
+                      - binary_sensor.template.publish:
+                          id: ${name}_switch
+                          state: ON
+              else:
+                - light.toggle:
+                    id: ${name}_light
+

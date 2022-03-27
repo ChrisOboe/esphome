@@ -1,0 +1,66 @@
+substitutions:
+  name: sp_06
+  voltage_divider: "800"
+
+<<: !include ../wifi_banzai.yaml
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: build/${name}
+  on_boot:
+    priority: 700
+    then:
+      - output.turn_on: power
+
+<<: !include ../common.yaml
+
+output:
+  - platform: gpio
+    pin:
+      number: GPIO13
+      inverted: true
+    id: output_led
+  - platform: gpio
+    pin:
+      number: GPIO14
+    id: power
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: true
+    cf_pin: GPIO04
+    cf1_pin: GPIO5
+    current:
+      id: ${name}_current
+      name: ${name}_current
+      unit_of_measurement: A
+    voltage:
+      id: ${name}_voltage
+      name: ${name}_voltage
+      unit_of_measurement: V
+    power:
+      id: ${name}_energy
+      name: ${name}_energy
+      unit_of_measurement: W
+    change_mode_every: 1
+    voltage_divider: ${voltage_divider}
+    update_interval: 5s
+
+text_sensor:
+  - platform: template
+    name: ${name}_state
+    update_interval: 5s
+    lambda: |-
+      if (id(${name}_energy).state <= 1) {
+        return {"Aus"};
+      } else if (id(${name}_energy).state > 1 && id(${name}_energy).state <= 5 ) {
+        return {"Standby"};
+      } else if (id(${name}_energy).state > 5) {
+        return {"An"};
+      } else {
+        return {"Unbekannt"};
+      }

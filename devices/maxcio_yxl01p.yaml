@@ -1,0 +1,37 @@
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: build/${name}
+
+<<: !include ../common.yaml
+
+my9231:
+  - data_pin: GPIO4
+    clock_pin: GPIO5
+    num_channels: 4
+    num_chips: 2
+
+output:
+  - platform: my9231
+    id: output_white
+    channel: 0
+  - platform: my9231
+    id: output_blue
+    channel: 1
+  - platform: my9231
+    id: output_green
+    channel: 2
+  - platform: my9231
+    id: output_red
+    channel: 3
+
+light:
+  - platform: rgbw
+    id: ${name}_light
+    name: ${name}_light
+    red: output_red
+    green: output_green
+    blue: output_blue
+    white: output_white
+

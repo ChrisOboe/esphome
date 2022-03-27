@@ -1,0 +1,90 @@
+esphome:
+  name: planttest
+  platform: ESP32
+  board: esp-wrover-kit
+  arduino_version: 1.0.4
+  on_boot:
+    priority: 799
+    then:
+      - output.turn_on: gpio04
+  on_shutdown:
+    then:
+      - output.turn_on: gpio04
+
+wifi:
+  ssid: "kendo_2.4"
+  password: !secret kendo_password
+
+logger:
+#  level: very_verbose
+
+# Enable Home Assistant API
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret flash_password
+
+#deep_sleep:
+#  run_duration: 30s
+#  sleep_duration: 1h
+
+#i2c:
+#  - id: bus_a
+#    sda: 25
+#    scl: 26
+#    scan: true
+
+output:
+  - platform: gpio
+    pin: GPIO04
+    id: gpio04
+
+sensor:
+  - platform: dht
+    model: DHT11
+    pin:
+      number: 16
+      mode: input
+    temperature:
+      name: "Temperatur"
+    humidity:
+      name: "Luftfeuchtigkeit"
+    update_interval: 5s
+  - platform: adc
+    pin: 32
+    attenuation: 11db
+    name: "Feuchtigkeit"
+    unit_of_measurement: "%"
+    icon: "mdi:water-percent"
+    update_interval: 5s
+    filters:
+      - calibrate_linear:
+        - 3.9 -> 100
+        - 0 -> 0
+  - platform: adc
+    pin: 34
+    attenuation: 11db
+    name: "Bodenleitfaehigkeit"
+    unit_of_measurement: "V"
+    update_interval: 5s
+  - platform: adc
+    pin: 33
+    attenuation: 11db
+    id: "battery_voltage"
+    name: "battery_voltage"
+    unit_of_measurement: 'V'
+    update_interval: 5s
+  - platform: template
+    name: "battery_level"
+    unit_of_measurement: '%'
+    update_interval: 5s
+    lambda: |-
+      return ((id(battery_voltage).state /3.30) * 100.00);
+#  - platform: bh1750
+#    i2c_id: bus_a
+#    name: "Illuminance"
+#    address: 0x23
+#    update_interval: 60s
+
+    

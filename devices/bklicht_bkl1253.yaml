@@ -1,0 +1,39 @@
+<<: !include ../common.yaml
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: ../build/${name}
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO04
+    id: gpio_4
+  - platform: esp8266_pwm
+    pin: GPIO05
+    id: gpio_5
+  - platform: esp8266_pwm
+    pin: GPIO12
+    id: gpio_12
+  - platform: esp8266_pwm
+    pin: GPIO13
+    id: gpio_13
+  - platform: esp8266_pwm
+    pin: GPIO14
+    id: gpio_14
+
+light:
+  - platform: rgbww
+    id: ${name}_light
+    name: ${name}_light
+    red: gpio_5
+    green: gpio_4
+    blue: gpio_13
+    cold_white: gpio_14
+    warm_white: gpio_12
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
+    # prevent overheating
+    constant_brightness: true
+    #color_interlock: true

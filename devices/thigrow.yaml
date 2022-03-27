@@ -1,0 +1,95 @@
+esphome:
+  name: ${name}
+  build_path: ../build/${name}
+  platform: ESP32
+  board: esp32dev
+  on_boot:
+    - priority: 1500
+      then:
+        - lambda: |-
+            // i2c (and dht) gets powered through gpio4
+            // so to get i2c working we need to power it before i2c starts
+            pinMode(4, OUTPUT);
+            digitalWrite(4, 1);
+
+
+<<: !include ../common-esp32.yaml
+
+# deep_sleep:
+#   run_duration: 30s
+#   sleep_duration: 1h
+
+i2c:
+  - id: bus_a
+    sda: 25
+    scl: 26
+    scan: false
+
+sensor:
+  - platform: dht
+    model: DHT11
+    pin:
+      number: 16
+      mode: input
+    temperature:
+      name: ${name}.temperature
+    humidity:
+      name: ${name}.humidity
+    update_interval: 10s
+
+  - platform: bh1750
+    name: ${name}.brightness
+    i2c_id: bus_a
+    address: 0x23
+    update_interval: 10s
+    measurement_duration: 254
+
+  - platform: adc
+    id: soil
+    pin: 32
+    attenuation: auto
+    update_interval: 10s
+
+  - platform: template
+    name: ${name}.moisture
+    device_class: moisture
+    unit_of_measurement: "%"
+    icon: "mdi:water-percent"
+    update_interval: 10s
+    lambda: |-
+      float high = 3.3;
+      float low = 1.5;
+      return (id(soil).state-low)*(100/(high-low));
+
+  - platform: adc
+    id: salt
+    pin: 34
+    attenuation: auto
+    update_interval: 10s
+
+  - platform: template
+    name: ${name}.conductivity
+    unit_of_measurement: "µS/cm"
+    icon: "mdi:sprout"
+    update_interval: 10s
+    # todo: do reference measurements
+    lambda: |-
+      float high = 0.35;
+      float low = 0.2;
+      return (id(salt).state-low)*(100/(high-low));
+
+  - platform: adc
+    pin: 33
+    id: "battery_voltage"
+    attenuation: auto
+    update_interval: 10s
+
+  - platform: template
+    name: ${name}.battery
+    device_class: battery
+    unit_of_measurement: '%'
+    update_interval: 10s
+    lambda: |-
+      float high = 4.2;
+      float low = 3.6;
+      return (id(battery_voltage).state-low)*(100/(high-low));

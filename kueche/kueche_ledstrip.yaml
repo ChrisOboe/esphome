@@ -1,0 +1,5 @@
+substitutions:
+  name: kueche_ledstrip
+
+<<: !include ../devices/ledstrip.yaml
+<<: !include ../wifi_banzai.yaml

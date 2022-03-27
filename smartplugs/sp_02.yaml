@@ -1,0 +1,5 @@
+substitutions:
+  name: sp_02
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/nousa1t.yaml

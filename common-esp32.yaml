@@ -1,0 +1,6 @@
+logger:
+api:
+  password: !secret api_password
+ota:
+  password: !secret flash_password
+

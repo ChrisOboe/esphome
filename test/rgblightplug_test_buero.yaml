@@ -1,0 +1,7 @@
+substitutions:
+  name: Test
+  name_l: test
+  location: Büro
+  location_l: buero
+<<: !include .kendo.yaml
+<<: !include .rgblightplug.yaml

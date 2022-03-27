@@ -1,0 +1,6 @@
+substitutions:
+  name: wohnzimmer_schalter
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/shelly_powered.yaml
+<<: !include ../devices/shelly_switch.yaml

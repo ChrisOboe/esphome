@@ -1,0 +1,44 @@
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: build/${name}
+
+<<: !include ../common.yaml
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO00
+    id: gpio_0
+  - platform: esp8266_pwm
+    pin: GPIO02
+    id: gpio_2
+  - platform: esp8266_pwm
+    pin: GPIO04
+    id: gpio_4
+  - platform: gpio
+    pin: GPIO15
+    id: gpio_15
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: true
+    cf_pin: GPIO05
+    cf1_pin: GPIO14
+    current:
+      id: ${name}_current
+      name: ${name}_current
+      unit_of_measurement: A
+    voltage:
+      id: ${name}_voltage
+      name: ${name}_voltage
+      unit_of_measurement: V
+    power:
+      id: ${name}_energy
+      name: ${name}_energy
+      unit_of_measurement: W
+    change_mode_every: 1
+    update_interval: 10s
+    voltage_divider: 900

@@ -1,0 +1,7 @@
+substitutions:
+  name: Fenster
+  name_l: fenster
+  location: Bad
+  location_l: bad
+<<: !include .kendo.yaml
+<<: !include .rgblightplug.yaml

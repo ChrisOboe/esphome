@@ -1,0 +1,5 @@
+substitutions:
+  name: schlafzimmer_kommode
+
+<<: !include ../wifi_kendo.yaml
+<<: !include ../devices/maxcio_yxl01p.yaml

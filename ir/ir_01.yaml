@@ -1,0 +1,45 @@
+substitutions:
+  name: ir_01
+
+<<: !include ../wifi_kendo.yaml
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: build/${name}
+
+<<: !include ../common.yaml
+
+remote_receiver:
+    pin: GPIO14
+    dump: all
+
+remote_transmitter:
+    pin: GPIO04
+    carrier_duty_percent: 50%
+
+button:
+  - platorm: template
+    name: Sony KDL-42EX440 Power
+    on_press:
+        - remote_transmitter.transmit_raw:
+          carrier_frequency: 38kHz
+          code: [-2395, 587, -1201, 587, -606, 588, -1201, 586, -607, 586, -1202, 584, -608, 589, -605, 587, -1202, 586, -607, 587, -607, 585, -607, 587, -607]
+
+button:
+  - platform: template
+    name: Telefunken Power
+    on_press:
+      - remote_transmitter.transmit_rc5
+        address: 0x01
+        command: 0x0C
+
+button:
+  - platorm: template
+    name: TCL Power
+    on_press:
+        - remote_transmitter.transmit_raw:
+          carrier_frequency: 38kHz
+          code: [-3998, 3984, -515, 1978, -515, 1981, -514, 1981, -515, 1980, -515, 988, -515, 989, -513, 1983, -513, 989, -513, 1981, -515, 989, -514, 1982, -516, 987, -513, 991, -512, 990, -512, 991, -512, 991, -511, 1982, -514, 1981, -515, 989, -513, 1982, -515, 988, -513, 1982, -514, 988, -514, 1981, -515]
+

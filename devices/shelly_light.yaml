@@ -1,0 +1,5 @@
+light:
+  - platform: binary
+    output: gpio_4
+    id: ${name}_light
+    name: ${name}_light

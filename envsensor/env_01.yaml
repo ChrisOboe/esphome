@@ -1,0 +1,5 @@
+substitutions:
+  name: env_01
+
+<<: !include ../wifi_kendo.yaml
+<<: !include ./envsensor.yaml

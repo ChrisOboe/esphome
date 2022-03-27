@@ -1,0 +1,5 @@
+substitutions:
+  name: kueche_regal
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/rgbplug_light.yaml

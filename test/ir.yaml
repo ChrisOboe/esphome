@@ -1,0 +1,43 @@
+esphome:
+  name: ir_receiver
+  platform: ESP8266
+  board: esp8285
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../common.yaml
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO05
+    id: gpio_5
+  - platform: esp8266_pwm
+    pin: GPIO12
+    id: gpio_12
+  - platform: esp8266_pwm
+    pin: GPIO13
+    id: gpio_13
+  - platform: esp8266_pwm
+    pin: GPIO15
+    id: gpio_15
+
+remote_receiver:
+    pin:
+      number: GPIO04
+      inverted: true
+      mode: INPUT_PULLUP
+    dump: all
+
+binary_sensor:
+  - platform: remote_receiver
+    name: "TCL Remote Power"
+    raw:
+        code: [ -4018, 3962, -535, 1987, -504, 1991, -504, 1991, -504, 1990, -504, 999, -505, 997, -504, 1992, -503, 999, -505, 1990, -505, 997, -504, 1991, -504, 999, -504, 998, -504, 999, -504, 999, -504, 998, -504, 1991, -503, 1991, -505, 998, -504, 1990, -505, 998, -506, 1988, -504, 999, -505, 1990, -504, 8446, -4020, 3963, -557, 1964, -504, 1990, -505, 1991, -504, 1990, -504, 999, -504, 999, -504, 1990, -505, 998, -504, 1990, -504, 1000, -503, 1992, -505, 998, -504, 999, -504, 999, -505, 998, -504, 999, -504, 1994, -502, 1991, -505, 998, -505, 1990, -505, 998, -506, 1990, -504, 999, -504, 1991, -505 ]
+
+
+light:
+  - platform: rgb
+    id: ledstrip
+    name: LED-Strip
+    red: gpio_12
+    green: gpio_5
+    blue: gpio_13

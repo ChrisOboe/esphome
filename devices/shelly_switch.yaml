@@ -1,0 +1,6 @@
+binary_sensor:
+  - platform: gpio
+    id: ${name}_switch
+    name: ${name}_switch
+    pin:
+      number: GPIO5

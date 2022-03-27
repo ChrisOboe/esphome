@@ -1,0 +1,6 @@
+substitutions:
+  name: schlafzimmer_schalter_tuer
+
+<<: !include ../wifi_kendo.yaml
+<<: !include ../devices/shelly_powered.yaml
+<<: !include ../devices/shelly_switch.yaml

@@ -1,0 +1,5 @@
+substitutions:
+  name: wohnzimmer_lowboard
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/maxcio_yxl01p.yaml

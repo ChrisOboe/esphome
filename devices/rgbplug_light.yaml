@@ -1,0 +1,22 @@
+<<: !include rgbplug.yaml
+
+light:
+  - platform: rgb
+    id: ${name}_color
+    name: ${name}_color
+    red: gpio_0
+    green: gpio_4
+    blue: gpio_2
+  - platform: binary
+    id: ${name}_light
+    name: ${name}_light
+    output: gpio_15
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO13
+    id: ${name}_button
+    name: ${name}_button
+    on_press:
+      - light.toggle: ${name}_light

@@ -1,0 +1,73 @@
+esphome:
+  name: minismartsocket_test
+  platform: ESP8266
+  board: esp01_1m
+
+<<: !include .banzai.yaml
+<<: !include .common.yaml
+
+output:
+  - platform: gpio
+    pin: GPIO15
+    id: gpio_15
+  - platform: esp8266_pwm
+    pin: GPIO00
+    id: gpio_0
+  - platform: esp8266_pwm
+    pin: GPIO02
+    id: gpio_2
+  - platform: esp8266_pwm
+    pin: GPIO04
+    id: gpio_4
+
+light:
+  - platform: rgb
+    name: Steckerfarbe
+    red: gpio_0
+    green: gpio_4
+    blue: gpio_2
+  - platform: binary
+    name: Aktiv
+    output: gpio_15
+    id: switchid
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO13
+    name: Taster
+    on_press:
+      - light.toggle: switchid
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: true
+    cf_pin: GPIO05
+    cf1_pin: GPIO14
+ #   current_resistor: 0.001
+ #   voltage_divider: 2.665
+    current:
+      name: Strom
+      unit_of_measurement: A
+      filters:
+        calibrate_linear:
+          - 0.0 -> 0.0
+          - 0.11877 -> 0.088
+    voltage:
+      name: Spannung
+      unit_of_measurement: V
+      filters:
+        calibrate_linear:
+          - 0.0 -> 0.0
+          - 620.6 -> 233.6
+    power:
+      name: Energie
+      unit_of_measurement: W
+      filters:
+        calibrate_linear:
+            - 0.0 -> 0.0
+            - 77.5 -> 11.4
+    change_mode_every: 1
+    update_interval: 10s

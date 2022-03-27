@@ -1,0 +1,41 @@
+substitutions:
+  name: env_02
+
+<<: !include ../wifi_kendo.yaml
+
+esphome:
+  name: ${name}
+  build_path: ../build/${name}
+  platform: ESP8266
+  board: d1_mini
+
+<<: !include ../common.yaml
+
+i2c:
+  - sda: D3
+    scl: D4
+    scan: false
+bme680_bsec:
+    address: 0x77
+
+sensor:
+  - platform: bme680_bsec
+    temperature:
+      name: ${name}_temperature
+      filters:
+        - offset: -4.4
+    pressure:
+      name: ${name}_pressure
+    humidity:
+      name: ${name}_humidity
+    iaq:
+      name: ${name}_iaq
+    co2_equivalent:
+      name: ${name}_co2
+    breath_voc_equivalent:
+      name: ${name}_voc
+
+text_sensor:
+  - platform: bme680_bsec
+    iaq_accuracy:
+      name: ${name}_iaq_accuracy

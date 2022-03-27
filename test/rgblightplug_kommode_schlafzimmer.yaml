@@ -1,0 +1,7 @@
+substitutions:
+  name: Kommode
+  name_l: kommode
+  location: Schlafzimmer
+  location_l: schlafzimmer
+<<: !include .kendo.yaml
+<<: !include .rgblightplug.yaml

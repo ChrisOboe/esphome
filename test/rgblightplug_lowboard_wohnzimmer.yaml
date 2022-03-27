@@ -1,0 +1,7 @@
+substitutions:
+  name: Lowboard
+  name_l: lowboard
+  location: Wohnzimmer
+  location_l: wohnzimmer
+<<: !include .banzai.yaml
+<<: !include .rgblightplug.yaml

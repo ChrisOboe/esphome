@@ -1,0 +1,7 @@
+substitutions:
+  name: Ecke
+  name_l: ecke
+  location: Wohnzimmer
+  location_l: wohnzimmer
+<<: !include .banzai.yaml
+<<: !include .rgblightplug.yaml

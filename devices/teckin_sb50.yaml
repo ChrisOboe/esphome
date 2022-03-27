@@ -1,0 +1,30 @@
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: build/${name}
+
+<<: !include ../common.yaml
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO04
+    id: gpio_4
+  - platform: esp8266_pwm
+    pin: GPIO12
+    id: gpio_12
+  - platform: esp8266_pwm
+    pin: GPIO13
+    id: gpio_13
+  - platform: esp8266_pwm
+    pin: GPIO14
+    id: gpio_14
+
+light:
+  - platform: rgbw
+    id: ${name}_light
+    name: ${name}_light
+    red: gpio_4
+    green: gpio_12
+    blue: gpio_14
+    white: gpio_13

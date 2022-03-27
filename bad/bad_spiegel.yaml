@@ -1,0 +1,22 @@
+substitutions:
+  name: bad_spiegel
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: ../build/${name}
+  esp8266_restore_from_flash: true
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/shelly.yaml
+<<: !include ../devices/shelly_light.yaml
+    
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO5
+    name: ${name} Schalter
+    id: ${name}_switch
+    on_state:
+      - light.toggle: ${name}_light

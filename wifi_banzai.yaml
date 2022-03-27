@@ -1,0 +1,10 @@
+wifi:
+  domain: ".gob.zone"
+  fast_connect: true
+  networks:
+    - ssid: "banzai_2.4"
+      password: !secret banzai_password
+  ap:
+    ssid: "esphome"
+    password: !secret ssid_password
+

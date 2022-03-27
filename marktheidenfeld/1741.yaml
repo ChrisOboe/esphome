@@ -1,0 +1,38 @@
+substitutions:
+  name: "shelly_1741"
+  description: "Shelly that toggles the relais on a http request"
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: ../build/${name}
+  esp8266_restore_from_flash: true
+
+logger:
+    esp8266_store_log_strings_in_flash: false
+
+wifi:
+  domain: ".gob.zone"
+  fast_connect: true
+  networks:
+    - ssid: "kendo_2.4"
+      password: !secret kendo_password
+  ap:
+    ssid: ${name}
+    password: !secret ssid_password
+captive_portal:
+
+ota:
+web_server:
+  port: 80
+
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4
+
+light:
+  - platform: binary
+    output: gpio_4
+    name: ${name}_light

@@ -1,0 +1,5 @@
+substitutions:
+  name: wohnzimmer_ecke
+
+<<: !include ../wifi_banzai.yaml
+<<: !include ../devices/teckin_sb50.yaml
