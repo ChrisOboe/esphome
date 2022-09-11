@@ -1,0 +1,16 @@
+platform: wifi_info
+ip_address:
+  name: ${name}_wifi_ip
+  entity_category: diagnostic
+ssid:
+  name: ${name}_wifi_ssid
+  entity_category: diagnostic
+bssid:
+  name: ${name}_wifi_bssid
+  entity_category: diagnostic
+mac_address:
+  name: ${name}_wifi_mac
+  entity_category: diagnostic
+scan_results:
+  name: ${name}_wifi_scan
+  entity_category: diagnostic

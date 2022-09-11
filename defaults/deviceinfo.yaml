@@ -1,0 +1,10 @@
+- platform: template
+  name: ${name}_devicename
+  update_interval: 600s
+  lambda: |-
+    return {"Nous A1T"};
+- platform: template
+  name: ${name}_devicetype
+  update_interval: 600s
+  lambda: |-
+    return {"Smartplug"};

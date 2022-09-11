@@ -1,0 +1,29 @@
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build
+
+# enable logging
+logger:
+    esp8266_store_log_strings_in_flash: false
+    #level: VERY_VERBOSE
+
+# enable hass api
+api:
+  password: !secret api_password
+
+# enable ota update
+ota:
+  password: !secret flash_password
+
+wifi:
+  domain: ".gob.zone"
+  fast_connect: false
+  networks:
+    - ssid: "banzai_2.4"
+      password: !secret banzai_password
+    - ssid: "kendo_2.4"
+      password: !secret kendo_password
+  ap:
+    ssid: "esphome"
+    password: !secret ap_password 

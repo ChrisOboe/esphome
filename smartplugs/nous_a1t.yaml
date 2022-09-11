@@ -1,0 +1,79 @@
+substitutions:
+  name: nous_a1t
+
+<<: !include ../defaults/global.yaml
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: false
+#  early_pin_init: false
+
+output:
+  - platform: gpio
+    pin:
+      number: GPIO13
+      inverted: true
+    id: output_led
+
+switch:
+  - platform: gpio
+    id: powered
+    name: ${name}_powered
+    pin: GPIO14
+  - platform: template
+    id: enable_button
+    name: ${name}_enable_button
+    entity_category: config
+    optimistic: true
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO00
+      inverted: true
+    id: button
+    name: ${name}_button
+    on_press:
+      if:
+        condition:
+          switch.is_on: enable_button
+        then:
+          - switch.toggle: powered
+
+sensor:
+  - <<: !include ../defaults/wifi_sensor.yaml
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: true
+    cf_pin: GPIO04
+    cf1_pin: GPIO5
+    current:
+      name: ${name}_current
+      unit_of_measurement: A
+    voltage:
+      name: ${name}_voltage
+      unit_of_measurement: V
+    power:
+      name: ${name}_power
+      unit_of_measurement: W
+    change_mode_every: 1
+    voltage_divider: 800
+    update_interval: 10s
+  - platform: uptime
+    name: ${name}_uptime
+
+text_sensor:
+  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: template
+    name: ${name}_devicename
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Nous A1T"};
+  - platform: template
+    name: ${name}_devicetype
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Smartplug"};
