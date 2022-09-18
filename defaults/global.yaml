@@ -6,6 +6,7 @@ esphome:
 # enable logging
 logger:
     esp8266_store_log_strings_in_flash: false
+    baud_rate: 0 # disable logging via uart
     #level: VERY_VERBOSE
 
 # enable hass api
@@ -20,10 +21,8 @@ wifi:
   domain: ".gob.zone"
   fast_connect: false
   networks:
-    - ssid: "banzai_2.4"
-      password: !secret banzai_password
-    - ssid: "kendo_2.4"
-      password: !secret kendo_password
+    - ssid: "gob"
+      password: !secret gob_password
   ap:
     ssid: "esphome"
     password: !secret ap_password 

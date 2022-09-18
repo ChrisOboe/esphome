@@ -5,7 +5,7 @@ substitutions:
 
 esp8266:
   board: esp01_1m
-  restore_from_flash: false
+  restore_from_flash: true
 #  early_pin_init: false
 
 output:
@@ -20,6 +20,7 @@ switch:
     id: powered
     name: ${name}_powered
     pin: GPIO14
+    restore_mode: RESTORE_DEFAULT_ON
   - platform: template
     id: enable_button
     name: ${name}_enable_button
@@ -51,12 +52,15 @@ sensor:
     current:
       name: ${name}_current
       unit_of_measurement: A
+      device_class: "current"
     voltage:
       name: ${name}_voltage
       unit_of_measurement: V
+      device_class: "voltage"
     power:
       name: ${name}_power
       unit_of_measurement: W
+      device_class: "power"
     change_mode_every: 1
     voltage_divider: 800
     update_interval: 10s
