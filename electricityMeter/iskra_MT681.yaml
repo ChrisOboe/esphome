@@ -1,0 +1,151 @@
+substitutions:
+  name: iskra_mt681
+
+<<: !include ../defaults/global.yaml
+
+esp8266:
+  board: nodemcuv2
+  restore_from_flash: false
+#  early_pin_init: false
+
+uart:
+ - id: uart_0
+   rx_pin: GPIO03
+   baud_rate: 9600
+   data_bits: 8
+   parity: NONE
+   stop_bits: 1
+ - id: uart_1
+   rx_pin: GPIO13
+   baud_rate: 9600
+   data_bits: 8
+   parity: NONE
+   stop_bits: 1
+
+sml:
+ - id: sml_0
+   uart_id: uart_0
+ - id: sml_1
+   uart_id: uart_1
+
+sensor:
+  - <<: !include ../defaults/wifi_sensor.yaml
+  - platform: uptime
+    name: ${name}_uptime
+
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "1-0:1.8.0"
+    name: ${name}_1_energy
+    unit_of_measurement: Wh
+    device_class: energy
+    state_class: total_increasing
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "1-0:1.8.1"
+    name: ${name}_1ht_energy
+    unit_of_measurement: Wh
+    device_class: energy
+    state_class: total_increasing
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "1-0:1.8.2"
+    name: ${name}_1nt_energy
+    unit_of_measurement: Wh
+    device_class: energy
+    state_class: total_increasing
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "1-0:16.7.0"
+    name: ${name}_1_power
+    unit_of_measurement: W
+    device_class: power
+
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "1-0:1.8.0"
+    name: ${name}_2_energy
+    unit_of_measurement: Wh
+    device_class: energy
+    state_class: total_increasing
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "1-0:1.8.1"
+    name: ${name}_2ht_energy
+    unit_of_measurement: Wh
+    device_class: energy
+    state_class: total_increasing
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "1-0:1.8.2"
+    name: ${name}_2nt_energy
+    unit_of_measurement: Wh
+    device_class: energy
+    state_class: total_increasing
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "1-0:16.7.0"
+    name: ${name}_2_power
+    unit_of_measurement: W
+    device_class: power
+
+text_sensor:
+  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: template
+    name: ${name}_devicename
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Iskra MT681"};
+  - platform: template
+    name: ${name}_devicetype
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Electricity Meter"};
+
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "129-129:199.130.3"
+    name: ${name}_1_vendorid
+    format: text
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "1-0:0.0.9"
+    name: ${name}_1_deviceid
+    format: hex
+  - platform: sml
+    sml_id: sml_0
+    server_id: "0649534b010722fb024a"
+    obis_code: "129-129:199.130.5"
+    name: ${name}_1_publickey
+    format: hex
+
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "129-129:199.130.3"
+    name: ${name}_2_vendorid
+    format: text
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "1-0:0.0.9"
+    name: ${name}_2_deviceid
+    format: hex
+  - platform: sml
+    sml_id: sml_1
+    server_id: "0649534b010722fb0082"
+    obis_code: "129-129:199.130.5"
+    name: ${name}_2_publickey
+    format: hex
