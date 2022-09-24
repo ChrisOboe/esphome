@@ -1,0 +1,112 @@
+substitutions:
+  name: shelly_25
+
+<<: !include ../defaults/global.yaml
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+#  early_pin_init: false
+
+i2c:
+  sda: GPIO12
+  scl: GPIO14
+
+sensor:
+  - <<: !include ../defaults/wifi_sensor.yaml
+  - platform: uptime
+    name: ${name}_uptime
+  - platform: ade7953
+    irq_pin: GPIO16
+    voltage:
+      name: ${name}_voltage
+      unit_of_measurement: V
+      device_class: "voltage"
+    current_a:
+      name: ${name}_current_a
+      unit_of_measurement: A
+      device_class: "current"
+    current_b:
+      name: ${name}_current_b
+      unit_of_measurement: A
+      device_class: "current"
+    active_power_a:
+      name: ${name}_power_a
+      unit_of_measurement: W
+      device_class: "power"
+    active_power_b:
+      name: ${name}_power_b
+      unit_of_measurement: W
+      device_class: "power"
+      filters:
+        - multiply: -1
+    update_interval: 10s
+  - platform: ntc
+    sensor: temp_resistance_reading
+    name: ${name}_temperature
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    icon: "mdi:thermometer"
+    calibration:
+      b_constant: 3350
+      reference_resistance: 10kOhm
+      reference_temperature: 298.15K
+  - platform: resistance
+    id: temp_resistance_reading
+    sensor: temp_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 32kOhm
+  - platform: adc
+    id: temp_analog_reading
+    pin: A0
+
+switch:
+  - platform: gpio
+    id: powered_a
+    name: ${name}_powered_a
+    pin: GPIO4
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: gpio
+    id: powered_b
+    name: ${name}_powered_b
+    pin: GPIO15
+    restore_mode: RESTORE_DEFAULT_OFF
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO13
+    name: ${name}_switch_a
+    on_press:
+      then:
+        - switch.turn_on: powered_a
+    on_release:
+      then:
+        - switch.turn_off: powered_a
+  - platform: gpio
+    pin:
+      number: GPIO5
+    name: ${name}_switch_b
+    on_press:
+      then:
+        - switch.turn_on: powered_b
+    on_release:
+      then:
+        - switch.turn_off: powered_b
+
+text_sensor:
+  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: template
+    name: ${name}_devicename
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Shelly 2.5"};
+  - platform: template
+    name: ${name}_devicetype
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Switch"};
+
+

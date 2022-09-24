@@ -1,0 +1,68 @@
+substitutions:
+  name: shelly_1v3
+
+<<: !include ../defaults/global.yaml
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+#  early_pin_init: false
+
+
+switch:
+  - platform: gpio
+    id: powered
+    name: ${name}_powered
+    pin: GPIO4
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: template
+    id: enable_button
+    name: ${name}_enable_button
+    entity_category: config
+    optimistic: true
+  - platform: template
+    id: enable_switch
+    name: ${name}_enable_switch
+    entity_category: config
+    optimistic: true
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO05
+    id: sw
+    name: ${name}_switch
+    on_press:
+      if:
+        condition:
+          switch.is_on: enable_button
+        then:
+          - switch.toggle: powered
+    on_state:
+      if:
+        condition:
+          switch.is_on: enable_switch
+        then:
+          - switch.toggle: powered
+
+sensor:
+  - <<: !include ../defaults/wifi_sensor.yaml
+  - platform: uptime
+    name: ${name}_uptime
+
+text_sensor:
+  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: template
+    name: ${name}_devicename
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Shelly 1v3"};
+  - platform: template
+    name: ${name}_devicetype
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Switch"};
+
+
