@@ -1,2 +1,4 @@
 defaults/secrets.yaml
 build/**
+**/.gitignore
+**/.esphome
