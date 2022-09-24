@@ -77,13 +77,13 @@ text_sensor:
 switch:
   - platform: gpio
     id: powered_a
-    pin: GPIO4
+    pin: GPIO15
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: &interlock [powered_a, powered_b]
     interlock_wait_time: 200ms
   - platform: gpio
     id: powered_b
-    pin: GPIO15
+    pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: *interlock
     interlock_wait_time: 200ms
@@ -116,15 +116,15 @@ cover:
   - platform: current_based
     name: ${name}_cover
     open_sensor: current_a
-    open_moving_current_threshold: 0.1
-    open_obstacle_current_threshold: 0.2
+    open_moving_current_threshold: 0.2
+    open_obstacle_current_threshold: 0.8
     open_duration: 23s
     open_action:
       - switch.turn_on: powered_a
 
     close_sensor: current_b
-    close_moving_current_threshold: 0.1
-    close_obstacle_current_threshold: 0.2
+    close_moving_current_threshold: 0.2
+    close_obstacle_current_threshold: 0.8
     close_duration: 21s
     close_action:
       - switch.turn_on: powered_b
@@ -132,4 +132,7 @@ cover:
     stop_action:
       - switch.turn_off: powered_a
       - switch.turn_off: powered_b
+
+    start_sensing_delay: 2s
+    malfunction_detection: false
         
