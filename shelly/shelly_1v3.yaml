@@ -14,17 +14,19 @@ switch:
     id: powered
     name: ${name}_powered
     pin: GPIO4
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
   - platform: template
     id: enable_button
     name: ${name}_enable_button
     entity_category: config
     optimistic: true
+    restore_state: true
   - platform: template
     id: enable_switch
     name: ${name}_enable_switch
     entity_category: config
     optimistic: true
+    restore_state: true
 
 binary_sensor:
   - platform: gpio
