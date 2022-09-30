@@ -14,3 +14,4 @@ mac_address:
 scan_results:
   name: ${name}_wifi_scan
   entity_category: diagnostic
+  update_interval: 1s
