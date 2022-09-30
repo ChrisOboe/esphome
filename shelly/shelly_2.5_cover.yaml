@@ -15,24 +15,34 @@ i2c:
 sensor:
   - <<: !include ../defaults/wifi_sensor.yaml
   - platform: uptime
+    id: timer
     name: ${name}_uptime
 
   - platform: ade7953
     irq_pin: GPIO16
     voltage:
       name: ${name}_voltage
+      filters:
+        - delta: 1
     current_a:
       id: current_a
       name: ${name}_current_a
+      filters:
+        - delta: 0.1
     current_b:
       id: current_b
       name: ${name}_current_b
+      filters:
+        - delta: 0.1
     active_power_a:
       name: ${name}_power_a
+      filters:
+        - delta: 1
     active_power_b:
       name: ${name}_power_b
       filters:
         - multiply: -1
+        - delta: 1
     update_interval: 0.5s
 
   - platform: ntc
@@ -72,7 +82,7 @@ text_sensor:
     entity_category: diagnostic
     update_interval: 600s
     lambda: |-
-      return {"Switch"};
+      return {"Cover"};
 
 switch:
   - platform: gpio
@@ -81,16 +91,22 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: &interlock [powered_a, powered_b]
     interlock_wait_time: 200ms
+
   - platform: gpio
     id: powered_b
     pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: *interlock
     interlock_wait_time: 200ms
+
   - platform: shutdown
     id: _shutdown
 
 binary_sensor:
+  - platform: gpio
+    id: ADE7953
+    pin: GPIO16
+
   - platform: gpio
     pin:
       number: GPIO13
@@ -114,25 +130,22 @@ binary_sensor:
 
 cover:
   - platform: current_based
+    id: cvr
     name: ${name}_cover
-    open_sensor: current_a
+    open_sensor: current_b
     open_moving_current_threshold: 0.2
     open_obstacle_current_threshold: 0.8
-    open_duration: 23s
+    open_duration: 40s
     open_action:
-      - switch.turn_on: powered_a
+      - switch.turn_on: powered_b
 
-    close_sensor: current_b
+    close_sensor: current_a
     close_moving_current_threshold: 0.2
     close_obstacle_current_threshold: 0.8
-    close_duration: 21s
+    close_duration: 40s
     close_action:
-      - switch.turn_on: powered_b
+      - switch.turn_on: powered_a
 
     stop_action:
       - switch.turn_off: powered_a
       - switch.turn_off: powered_b
-
-    start_sensing_delay: 2s
-    malfunction_detection: false
-        
