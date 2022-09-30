@@ -38,25 +38,34 @@ sensor:
     server_id: "0649534b010722fb024a"
     obis_code: "1-0:1.8.0"
     name: ${name}_1_energy
-    unit_of_measurement: Wh
+    unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    accuracy_decimals: 4
+    filters:
+      - multiply: 0.0001
   - platform: sml
     sml_id: sml_0
     server_id: "0649534b010722fb024a"
     obis_code: "1-0:1.8.1"
     name: ${name}_1ht_energy
-    unit_of_measurement: Wh
+    unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    accuracy_decimals: 4
+    filters:
+      - multiply: 0.0001
   - platform: sml
     sml_id: sml_0
     server_id: "0649534b010722fb024a"
     obis_code: "1-0:1.8.2"
     name: ${name}_1nt_energy
-    unit_of_measurement: Wh
+    unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    accuracy_decimals: 4
+    filters:
+      - multiply: 0.0001
   - platform: sml
     sml_id: sml_0
     server_id: "0649534b010722fb024a"
@@ -70,25 +79,34 @@ sensor:
     server_id: "0649534b010722fb0082"
     obis_code: "1-0:1.8.0"
     name: ${name}_2_energy
-    unit_of_measurement: Wh
+    unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    accuracy_decimals: 4
+    filters:
+      - multiply: 0.0001
   - platform: sml
     sml_id: sml_1
     server_id: "0649534b010722fb0082"
     obis_code: "1-0:1.8.1"
     name: ${name}_2ht_energy
-    unit_of_measurement: Wh
+    unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    accuracy_decimals: 4
+    filters:
+      - multiply: 0.0001
   - platform: sml
     sml_id: sml_1
     server_id: "0649534b010722fb0082"
     obis_code: "1-0:1.8.2"
     name: ${name}_2nt_energy
-    unit_of_measurement: Wh
+    unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    accuracy_decimals: 4
+    filters:
+      - multiply: 0.0001
   - platform: sml
     sml_id: sml_1
     server_id: "0649534b010722fb0082"
