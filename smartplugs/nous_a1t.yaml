@@ -53,17 +53,23 @@ sensor:
       name: ${name}_current
       unit_of_measurement: A
       device_class: "current"
+      filters:
+        - delta: 0.05
     voltage:
       name: ${name}_voltage
       unit_of_measurement: V
       device_class: "voltage"
+      filters:
+        - delta: 1
     power:
       name: ${name}_power
       unit_of_measurement: W
       device_class: "power"
+      filters:
+        - delta: 10
     change_mode_every: 1
     voltage_divider: 800
-    update_interval: 10s
+    update_interval: 1s
   - platform: uptime
     name: ${name}_uptime
 
