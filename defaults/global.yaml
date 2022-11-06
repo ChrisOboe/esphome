@@ -3,12 +3,6 @@ esphome:
   name_add_mac_suffix: true
   build_path: ../build
 
-# enable logging
-logger:
-    esp8266_store_log_strings_in_flash: false
-    baud_rate: 0 # disable logging via uart
-    #level: VERY_VERBOSE
-
 # enable hass api
 api:
   password: !secret api_password

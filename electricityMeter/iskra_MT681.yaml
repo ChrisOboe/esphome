@@ -2,6 +2,7 @@ substitutions:
   name: iskra_mt681
 
 <<: !include ../defaults/global.yaml
+<<: !include ../defaults/esp8266.yaml
 
 esp8266:
   board: nodemcuv2

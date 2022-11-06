@@ -2,6 +2,7 @@ substitutions:
   name: shelly_25
 
 <<: !include ../defaults/global.yaml
+<<: !include ../defaults/esp8266.yaml
 
 esp8266:
   board: esp01_1m
