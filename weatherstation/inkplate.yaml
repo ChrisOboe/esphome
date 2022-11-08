@@ -323,7 +323,7 @@ display:
 
     std::map<std::string, std::string> moon_icon_map {
       {"first_quarter", "\U000F0F61"},
-      {"full", "\U000F0F62"},
+      {"full_moon", "\U000F0F62"},
       {"last_quarter", "\U000F0F63"},
       {"new", "\U000F0F64"},
       {"waning_crescent", "\U000F0F65"},
