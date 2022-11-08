@@ -257,7 +257,7 @@ display:
 - platform: inkplate6
   id: inkplate_display
   greyscale: true
-  partial_updating: false
+  partial_updating: true
   auto_clear_enabled: false
   full_update_every: 60
   rotation: 0
