@@ -256,11 +256,12 @@ font:
 display:
 - platform: inkplate6
   id: inkplate_display
-  greyscale: false
-  partial_updating: true
+  greyscale: true
+  partial_updating: false
   auto_clear_enabled: false
+  full_update_every: 60
   rotation: 0
-  update_interval: 20s
+  update_interval: 60s
 
   ckv_pin: 32
   sph_pin: 33
