@@ -136,14 +136,14 @@ cover:
     open_sensor: current_b
     open_moving_current_threshold: 0.2
     open_obstacle_current_threshold: 0.8
-    open_duration: 40s
+    open_duration: 36s
     open_action:
       - switch.turn_on: powered_b
 
     close_sensor: current_a
     close_moving_current_threshold: 0.2
     close_obstacle_current_threshold: 0.8
-    close_duration: 40s
+    close_duration: 32s
     close_action:
       - switch.turn_on: powered_a
 
