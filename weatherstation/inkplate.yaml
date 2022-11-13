@@ -256,11 +256,12 @@ font:
 display:
 - platform: inkplate6
   id: inkplate_display
-  greyscale: false
+  greyscale: true
   partial_updating: true
   auto_clear_enabled: false
+  full_update_every: 60
   rotation: 0
-  update_interval: 20s
+  update_interval: 60s
 
   ckv_pin: 32
   sph_pin: 33
@@ -323,7 +324,7 @@ display:
 
     std::map<std::string, std::string> moon_icon_map {
       {"first_quarter", "\U000F0F61"},
-      {"full", "\U000F0F62"},
+      {"full_moon", "\U000F0F62"},
       {"last_quarter", "\U000F0F63"},
       {"new", "\U000F0F64"},
       {"waning_crescent", "\U000F0F65"},
