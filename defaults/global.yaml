@@ -19,4 +19,7 @@ wifi:
       password: !secret gob_password
   ap:
     ssid: "esphome"
-    password: !secret ap_password 
+    password: !secret ap_password
+
+debug:
+    update_interval: 5s

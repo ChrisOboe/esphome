@@ -29,6 +29,9 @@ sun:
 sensor:
 # defaults
   - <<: !include ../defaults/wifi_sensor.yaml
+  - platform: debug
+    free:
+      name: ${name}_heap_free
   - platform: uptime
     name: ${name}_uptime
 # device specific
@@ -95,6 +98,9 @@ sensor:
 text_sensor:
 # defaults
   - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: debug
+    device:
+      name: ${name}_deviceinfo
   - platform: template
     name: ${name}_devicename
     entity_category: diagnostic

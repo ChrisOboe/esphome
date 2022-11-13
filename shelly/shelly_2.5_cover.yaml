@@ -15,6 +15,7 @@ i2c:
 
 sensor:
   - <<: !include ../defaults/wifi_sensor.yaml
+  - <<: !include ../defaults/debug_sensor.yaml
   - platform: uptime
     id: timer
     name: ${name}_uptime
@@ -24,26 +25,36 @@ sensor:
     voltage:
       name: ${name}_voltage
       filters:
-        - delta: 1
+        - or:
+          - delta: 1
+          - heartbeat:  60s
     current_a:
       id: current_a
       name: ${name}_current_a
       filters:
-        - delta: 0.1
+        - or:
+          - delta: 0.1
+          - heartbeat: 60s
     current_b:
       id: current_b
       name: ${name}_current_b
       filters:
-        - delta: 0.1
+        - or:
+          - delta: 0.1
+          - heartbeat: 60s
     active_power_a:
       name: ${name}_power_a
       filters:
-        - delta: 1
+        - or:
+          - delta: 1
+          - heartbeat:  60s
     active_power_b:
       name: ${name}_power_b
       filters:
         - multiply: -1
-        - delta: 1
+        - or:
+          - delta: 1
+          - heartbeat: 60s
     update_interval: 0.5s
 
   - platform: ntc
@@ -72,6 +83,9 @@ sensor:
 
 text_sensor:
   - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: debug
+    device:
+      name: ${name}_deviceinfo
   - platform: template
     name: ${name}_devicename
     entity_category: diagnostic

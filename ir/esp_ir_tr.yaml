@@ -24,11 +24,15 @@ remote_receiver:
 
 sensor:
   - <<: !include ../defaults/wifi_sensor.yaml
+  - <<: !include ../defaults/debug_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
 text_sensor:
   - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: debug
+    device:
+      name: ${name}_deviceinfo
   - platform: template
     name: ${name}_devicename
     entity_category: diagnostic

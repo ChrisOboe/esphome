@@ -1,0 +1,9 @@
+platform: debug
+free:
+  name: ${name}_heap_free
+fragmentation:
+  name: ${name}_heap_fragmentation
+block:
+  name: ${name}_heap_maxblock
+loop_time:
+  name: ${name}_looptime
