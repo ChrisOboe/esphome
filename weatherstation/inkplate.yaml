@@ -7,6 +7,19 @@ substitutions:
 esp32:
   board: esp-wrover-kit
 
+## TODO: increase app partition truogh csv
+esphome:
+  name: inkplate
+  platformio_options:
+    board_upload.flash_size: 2MB
+  name_add_mac_suffix: true
+  build_path: ../build
+
+esp32_ble_tracker:
+bluetooth_proxy:
+#############################################
+
+
 i2c:
 bme680_bsec:
   address: 0x77
@@ -247,17 +260,17 @@ font:
       - "\U000F0F67" # moon-waxing-crescent
       - "\U000F0F68" # moon-waxing-gibbous
 
-  - id: font_icons
-    file: fonts/materialdesignicons-webfont.ttf
-    size: 48
-    glyphs:
-      - "\U000F059D" # weather-windy // air quality
-      - "\U000F050F" # thermometer
-      - "\U000F058E" # water-percent
-      - "\U000F029A" # gauge
-      - "\U000F07E4" # co2
-      - "\U000F15FA" # windsock
-      - "\U000F0BAC" # molecule
+#  - id: font_icons
+#    file: fonts/materialdesignicons-webfont.ttf
+#    size: 48
+#    glyphs:
+#      - "\U000F059D" # weather-windy // air quality
+#      - "\U000F050F" # thermometer
+#      - "\U000F058E" # water-percent
+#      - "\U000F029A" # gauge
+#      - "\U000F07E4" # co2
+#      - "\U000F15FA" # windsock
+#      - "\U000F0BAC" # molecule
 
 display:
 - platform: inkplate6
