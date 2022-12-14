@@ -1,0 +1,54 @@
+substitutions:
+  name: shelly_dimmer_2
+
+<<: !include ../defaults/global.yaml
+<<: !include ../defaults/esp8266.yaml
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+#  early_pin_init: false
+
+uart:
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 115200
+
+light:
+  - platform: shelly_dimmer
+    name: ${name}_light
+    power:
+      name: ${name}_power
+    voltage:
+      name: ${name}_voltage
+    current:
+      name: ${name}_current
+    firmware:
+      version: "51.6"
+      update: true
+
+sensor:
+  - <<: !include ../defaults/wifi_sensor.yaml
+  - <<: !include ../defaults/debug_sensor.yaml
+  - platform: uptime
+    name: ${name}_uptime
+
+text_sensor:
+  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: debug
+    device:
+      name: ${name}_deviceinfo
+  - platform: template
+    name: ${name}_devicename
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Shelly Dimmer 2"};
+  - platform: template
+    name: ${name}_devicetype
+    entity_category: diagnostic
+    update_interval: 600s
+    lambda: |-
+      return {"Switch"};
+
+

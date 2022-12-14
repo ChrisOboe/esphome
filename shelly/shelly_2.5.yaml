@@ -15,33 +15,48 @@ i2c:
 
 sensor:
   - <<: !include ../defaults/wifi_sensor.yaml
+  - <<: !include ../defaults/debug_sensor.yaml
   - platform: uptime
+    id: timer
     name: ${name}_uptime
+
   - platform: ade7953
     irq_pin: GPIO16
     voltage:
       name: ${name}_voltage
-      unit_of_measurement: V
-      device_class: "voltage"
+      filters:
+        - or:
+          - delta: 1
+          - heartbeat:  60s
     current_a:
+      id: current_a
       name: ${name}_current_a
-      unit_of_measurement: A
-      device_class: "current"
+      filters:
+        - or:
+          - delta: 0.1
+          - heartbeat: 60s
     current_b:
+      id: current_b
       name: ${name}_current_b
-      unit_of_measurement: A
-      device_class: "current"
+      filters:
+        - or:
+          - delta: 0.1
+          - heartbeat: 60s
     active_power_a:
       name: ${name}_power_a
-      unit_of_measurement: W
-      device_class: "power"
+      filters:
+        - or:
+          - delta: 1
+          - heartbeat:  60s
     active_power_b:
       name: ${name}_power_b
-      unit_of_measurement: W
-      device_class: "power"
       filters:
         - multiply: -1
-    update_interval: 10s
+        - or:
+          - delta: 1
+          - heartbeat: 60s
+    update_interval: 0.5s
+
   - platform: ntc
     sensor: temp_resistance_reading
     name: ${name}_temperature
@@ -52,11 +67,17 @@ sensor:
       b_constant: 3350
       reference_resistance: 10kOhm
       reference_temperature: 298.15K
+    on_value_range:
+      above: 90
+      then:
+        - switch.turn_on: _shutdown
+
   - platform: resistance
     id: temp_resistance_reading
     sensor: temp_analog_reading
     configuration: DOWNSTREAM
     resistor: 32kOhm
+
   - platform: adc
     id: temp_analog_reading
     pin: A0
@@ -67,36 +88,42 @@ switch:
     name: ${name}_powered_a
     pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
+
   - platform: gpio
     id: powered_b
     name: ${name}_powered_b
     pin: GPIO15
     restore_mode: RESTORE_DEFAULT_OFF
 
+  - platform: shutdown
+    id: _shutdown
+
 binary_sensor:
+  - platform: gpio
+    id: ADE7953
+    pin: GPIO16
+
   - platform: gpio
     pin:
       number: GPIO13
     name: ${name}_switch_a
-    on_press:
+    on_state:
       then:
-        - switch.turn_on: powered_a
-    on_release:
-      then:
-        - switch.turn_off: powered_a
+        - switch.toggle: powered_b
+
   - platform: gpio
     pin:
       number: GPIO5
     name: ${name}_switch_b
-    on_press:
+    on_state:
       then:
-        - switch.turn_on: powered_b
-    on_release:
-      then:
-        - switch.turn_off: powered_b
+        - switch.toggle: powered_a
 
 text_sensor:
   - <<: !include ../defaults/wifi_text_sensor.yaml
+  - platform: debug
+    device:
+      name: ${name}_deviceinfo
   - platform: template
     name: ${name}_devicename
     entity_category: diagnostic
@@ -109,5 +136,3 @@ text_sensor:
     update_interval: 600s
     lambda: |-
       return {"Switch"};
-
-
