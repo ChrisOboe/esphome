@@ -90,7 +90,7 @@ sensor:
       device_class: "current"
       filters:
         - or:
-          - delta: 0.0434782609 # aequivalent of 10 watts
+          - delta: 0.00434782609 # aequivalent of 1 watt
           - heartbeat: 60s
     voltage:
       name: ${name}_voltage
@@ -106,7 +106,7 @@ sensor:
       device_class: "power"
       filters:
         - or:
-          - delta: 10
+          - delta: 1
           - heartbeat: 60s
     change_mode_every: 1
     voltage_divider: 900
