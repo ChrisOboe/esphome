@@ -7,18 +7,10 @@ substitutions:
 esp32:
   board: esp-wrover-kit
 
-## TODO: increase app partition truogh csv
 esphome:
   name: inkplate
-  platformio_options:
-    board_upload.flash_size: 2MB
   name_add_mac_suffix: true
   build_path: ../build
-
-esp32_ble_tracker:
-bluetooth_proxy:
-#############################################
-
 
 i2c:
 bme680_bsec:
@@ -194,7 +186,7 @@ font:
       weight: regular
     #file: "fonts/Bully.ttf"
     size: 140
-    glyphs: "0123456789.°Cm/s%PpaNn"
+    glyphs: "-0123456789.°Cm/s%PpaNn"
 
   - id: font_values
     file:
@@ -202,7 +194,7 @@ font:
       type: "gfonts"
       weight: regular
     size: 100
-    glyphs: "0123456789.°Cm/s%PpaNn"
+    glyphs: "-0123456789.°Cm/s%PpaNn"
 
   - id: font_description
     file:
