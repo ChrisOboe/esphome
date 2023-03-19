@@ -7,11 +7,6 @@ substitutions:
 esp32:
   board: esp-wrover-kit
 
-esphome:
-  name: inkplate
-  name_add_mac_suffix: true
-  build_path: ../build
-
 i2c:
 bme680_bsec:
   address: 0x77

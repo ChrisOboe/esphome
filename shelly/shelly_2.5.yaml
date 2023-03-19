@@ -1,5 +1,5 @@
 substitutions:
-  name: shelly_25
+  name: shelly_25_switch
 
 <<: !include ../global/global.yaml
 <<: !include ../global/esp8266.yaml

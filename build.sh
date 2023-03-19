@@ -8,7 +8,6 @@ for i in */*.yaml; do
 	set -e
 	esphome compile "$i"
 	mkdir -p builds
-	cp build/.pioenvs/$NAME/firmware.bin builds/$NAME.bin
-	rm -rf build
+	cp build/$NAME/.pioenvs/$NAME/firmware.bin builds/$NAME.bin
 	set +e
 done
