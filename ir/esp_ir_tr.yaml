@@ -1,11 +1,8 @@
 substitutions:
   name: esp_ir_tr
 
-<<: !include ../defaults/global.yaml
-# <<: !include ../defaults/esp8266.yaml
-
-logger:
-  level: NONE
+<<: !include ../global/global.yaml
+<<: !include ../global/esp8266.yaml
 
 esp8266:
   board: esp01_1m
@@ -26,13 +23,13 @@ remote_receiver:
   buffer_size: 200B
 
 sensor:
-  - <<: !include ../defaults/wifi_sensor.yaml
-  - <<: !include ../defaults/debug_sensor.yaml
+  - <<: !include ../global/wifi_sensor.yaml
+  - <<: !include ../global/debug_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
 text_sensor:
-  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - <<: !include ../global/wifi_text_sensor.yaml
   - platform: debug
     device:
       name: ${name}_deviceinfo

@@ -1,8 +1,8 @@
 substitutions:
   name: shelly_1v3
 
-<<: !include ../defaults/global.yaml
-<<: !include ../defaults/esp8266.yaml
+<<: !include ../global/global.yaml
+<<: !include ../global/esp8266.yaml
 
 esp8266:
   board: esp01_1m
@@ -28,6 +28,13 @@ switch:
     entity_category: config
     optimistic: true
     restore_state: true
+  - platform: template
+    id: standalone_mode
+    name: ${name}_standalone_mode
+    entity_category: config
+    optimistic: true
+    restore_state: true
+    restore_mode: RESTORE_DEFAULT_ON
 
 binary_sensor:
   - platform: gpio
@@ -38,24 +45,34 @@ binary_sensor:
     on_press:
       if:
         condition:
-          switch.is_on: enable_button
+          and:
+            - switch.is_on: enable_button
+            - or:
+              - switch.is_on: standalone_mode
+              - not:
+                  api.connected:
         then:
           - switch.toggle: powered
     on_state:
       if:
         condition:
-          switch.is_on: enable_switch
+          and:
+            - switch.is_on: enable_switch
+            - or:
+              - switch.is_on: standalone_mode
+              - not:
+                  api.connected:
         then:
           - switch.toggle: powered
 
 sensor:
-  - <<: !include ../defaults/wifi_sensor.yaml
-  - <<: !include ../defaults/debug_sensor.yaml
+  - <<: !include ../global/wifi_sensor.yaml
+  - <<: !include ../global/debug_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
 text_sensor:
-  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - <<: !include ../global/wifi_text_sensor.yaml
   - platform: debug
     device:
       name: ${name}_deviceinfo

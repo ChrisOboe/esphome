@@ -1,8 +1,8 @@
 substitutions:
   name: iskra_mt681
 
-<<: !include ../defaults/global.yaml
-<<: !include ../defaults/esp8266.yaml
+<<: !include ../global/global.yaml
+<<: !include ../global/esp8266.yaml
 
 esp8266:
   board: nodemcuv2
@@ -30,7 +30,7 @@ sml:
    uart_id: uart_1
 
 sensor:
-  - <<: !include ../defaults/wifi_sensor.yaml
+  - <<: !include ../global/wifi_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
@@ -117,7 +117,7 @@ sensor:
     device_class: power
 
 text_sensor:
-  - <<: !include ../defaults/wifi_text_sensor.yaml
+  - <<: !include ../global/wifi_text_sensor.yaml
   - platform: template
     name: ${name}_devicename
     entity_category: diagnostic

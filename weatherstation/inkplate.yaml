@@ -1,8 +1,8 @@
 substitutions:
   name: inkplate
 
-<<: !include ../defaults/global.yaml
-<<: !include ../defaults/esp32.yaml
+<<: !include ../global/global.yaml
+<<: !include ../global/esp32.yaml
 
 esp32:
   board: esp-wrover-kit
@@ -32,8 +32,8 @@ sun:
   longitude: 9.77361
 
 sensor:
-# defaults
-  - <<: !include ../defaults/wifi_sensor.yaml
+# global
+  - <<: !include ../global/wifi_sensor.yaml
   - platform: debug
     free:
       name: ${name}_heap_free
@@ -101,8 +101,8 @@ sensor:
     attribute: wind_speed
 
 text_sensor:
-# defaults
-  - <<: !include ../defaults/wifi_text_sensor.yaml
+# global
+  - <<: !include ../global/wifi_text_sensor.yaml
   - platform: debug
     device:
       name: ${name}_deviceinfo

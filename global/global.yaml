@@ -5,7 +5,8 @@ esphome:
 
 # enable hass api
 api:
-  password: !secret api_password
+  encryption:
+      key: !secret encryption_key
 
 # enable ota update
 ota:

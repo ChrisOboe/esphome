@@ -13,9 +13,9 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       devShell = pkgs.mkShell {
-        buildInputs = [
-          pkgs.esphome
-          pkgs.gnumake
+        buildInputs = with pkgs; [
+          esphome
+          git-crypt
         ];
       };
     });
