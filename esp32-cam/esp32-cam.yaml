@@ -10,7 +10,6 @@ esp32:
 
 sensor:
   - <<: !include ../global/wifi_sensor.yaml
-  - <<: !include ../global/debug_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
@@ -34,7 +33,7 @@ text_sensor:
       return {"Camera"};
 
 esp32_camera:
-  name: "${camera_name}"
+  name: "${name}_camera"
   external_clock:
     pin: GPIO0
     frequency: 20MHz
@@ -46,8 +45,8 @@ esp32_camera:
   href_pin: GPIO23
   pixel_clock_pin: GPIO22
   power_down_pin: GPIO32
-  # Image settings
-  max_framerate: 5 fps    # default: 10 fps, max 60
-  idle_framerate: 0.2 fps # default: 0.1 fps - framerate for 'picture' in HA dashboard
-  resolution: 800x600     # default: 640x480 (VGA) - higher res requires more memory
-  jpeg_quality: 10        # 10 (best) to 63 (worst)
+
+  max_framerate: 15 fps  
+  idle_framerate: 0.1 fps
+  resolution: 800x600    
+  jpeg_quality: 10
