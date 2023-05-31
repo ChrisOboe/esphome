@@ -1,0 +1,27 @@
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: arduino
+
+esphome:
+  name: doorbell
+  libraries:
+    - Wire
+    - SPI
+    - WiFi
+    - WiFiClientSecure
+    - ESP8266Audio
+    - https://github.com/sonocotta/esp32-tas5805m-dac
+  includes:
+    - playSound.hpp
+    - sound.h
+
+output:
+  - platform: custom
+    type: binary
+    lambda: |-
+      auto playSound = new PlaySoundOutput();
+      App.register_component(playSound);
+      return {playSound};
+    outputs:
+      id: playSoundOutput

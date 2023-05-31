@@ -33,6 +33,8 @@ sensor:
       id: current_a
       filters:
         - delta: 0.00434782608
+        - lambda: !lambda |-
+            return x < 0.0 ? 0.0 : x;
       on_raw_value:
         if:
           condition:
@@ -50,6 +52,8 @@ sensor:
       id: current_b
       filters:
         - delta: 0.00434782608
+        - lambda: !lambda |-
+            return x < 0.0 ? 0.0 : x;
       on_raw_value:
         if:
           condition:
@@ -67,6 +71,8 @@ sensor:
       id: power_a
       filters:
         - delta: 1
+        - lambda: !lambda |-
+            return x < 0.0 ? 0.0 : x;
       on_raw_value:
         if:
           condition:
@@ -84,6 +90,8 @@ sensor:
       id: power_b
       filters:
         - delta: 1
+        - lambda: !lambda |-
+            return x < 0.0 ? 0.0 : x;
       on_raw_value:
         if:
           condition:
@@ -171,18 +179,6 @@ text_sensor:
   - platform: debug
     device:
       name: ${name}_deviceinfo
-  - platform: template
-    name: ${name}_devicename
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Shelly 2.5"};
-  - platform: template
-    name: ${name}_devicetype
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Cover"};
 
 switch:
   - platform: gpio

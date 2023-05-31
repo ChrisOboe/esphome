@@ -15,9 +15,17 @@ ota:
 wifi:
   domain: ".gob.zone"
   fast_connect: false
+  passive_scan: false
   networks:
+    - ssid: "banzai_2.4"
+      password: !secret kendo_password
+      priority: 10
+    - ssid: "kendo_2.4"
+      password: !secret kendo_password
+      priority: 10
     - ssid: "gob"
       password: !secret gob_password
+
   ap:
     ssid: "esphome"
     password: !secret ap_password
