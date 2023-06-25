@@ -3,6 +3,10 @@ esphome:
   name_add_mac_suffix: true
   build_path: ../build/${name}
 
+# disable mdns
+mdns:
+  disabled: true
+
 # enable hass api
 api:
   encryption:
@@ -19,16 +23,16 @@ wifi:
   networks:
     - ssid: "banzai_2.4"
       password: !secret kendo_password
-      priority: 10
     - ssid: "kendo_2.4"
       password: !secret kendo_password
-      priority: 10
     - ssid: "gob"
       password: !secret gob_password
 
   ap:
     ssid: "esphome"
     password: !secret ap_password
+
+logger:
 
 debug:
     update_interval: 5s
