@@ -31,8 +31,3 @@ wifi:
   ap:
     ssid: "esphome"
     password: !secret ap_password
-
-logger:
-
-debug:
-    update_interval: 5s

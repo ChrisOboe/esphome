@@ -6,31 +6,27 @@ substitutions:
 
 esp32:
   board: node32s
+  #board: esp32cam
+  #framework:
+  #  type: esp-idf
 
 
-sensor:
-  - <<: !include ../global/wifi_sensor.yaml
-  - platform: uptime
-    name: ${name}_uptime
 
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4
 
-text_sensor:
-  - <<: !include ../global/wifi_text_sensor.yaml
-  - platform: debug
-    device:
-      name: ${name}_deviceinfo
-  - platform: template
-    name: ${name}_devicename
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"ESP32 CAM"};
-  - platform: template
-    name: ${name}_devicetype
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Camera"};
+light:
+  - platform: binary
+    output: gpio_4
+    name: "${name}_light"
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
+  - port: 8081
+    mode: snapshot
 
 esp32_camera:
   name: "${name}_camera"
@@ -45,8 +41,11 @@ esp32_camera:
   href_pin: GPIO23
   pixel_clock_pin: GPIO22
   power_down_pin: GPIO32
+  #max_framerate: 15 fps
+  #idle_framerate: 1 fps
+  #resolution: 640x480
+  #jpeg_quality: 10
 
-  max_framerate: 15 fps  
-  idle_framerate: 0.1 fps
-  resolution: 800x600    
-  jpeg_quality: 10
+switch:
+  - platform: restart
+    name: "${name}_restart"
