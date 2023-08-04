@@ -14,7 +14,7 @@ i2c:
 
 sensor:
   - <<: !include ../global/wifi_sensor.yaml
-  - <<: !include ../global/debug_sensor.yaml
+  #- <<: !include ../global/debug_sensor.yaml
   - platform: uptime
     id: timer
     name: ${name}_uptime
@@ -173,11 +173,11 @@ sensor:
     id: temp_analog_reading
     pin: A0
 
-text_sensor:
-  - <<: !include ../global/wifi_text_sensor.yaml
-  - platform: debug
-    device:
-      name: ${name}_deviceinfo
+#text_sensor:
+#  - <<: !include ../global/wifi_text_sensor.yaml
+#  - platform: debug
+#    device:
+#      name: ${name}_deviceinfo
 
 switch:
   - platform: gpio
