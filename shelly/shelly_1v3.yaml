@@ -2,13 +2,11 @@ substitutions:
   name: shelly_1v3
 
 <<: !include ../global/global.yaml
-<<: !include ../global/esp8266.yaml
 
 esp8266:
   board: esp01_1m
   restore_from_flash: true
 #  early_pin_init: false
-
 
 switch:
   - platform: gpio

@@ -2,12 +2,14 @@ substitutions:
   name: iskra_mt681
 
 <<: !include ../global/global.yaml
-<<: !include ../global/esp8266.yaml
 
 esp8266:
   board: nodemcuv2
   restore_from_flash: false
 #  early_pin_init: false
+
+logger:
+    baud_rate: 0
 
 uart:
  - id: uart_0
@@ -118,18 +120,6 @@ sensor:
 
 text_sensor:
   - <<: !include ../global/wifi_text_sensor.yaml
-  - platform: template
-    name: ${name}_devicename
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Iskra MT681"};
-  - platform: template
-    name: ${name}_devicetype
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Electricity Meter"};
 
   - platform: sml
     sml_id: sml_0

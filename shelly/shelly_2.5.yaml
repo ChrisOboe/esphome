@@ -2,7 +2,6 @@ substitutions:
   name: shelly_25_switch
 
 <<: !include ../global/global.yaml
-<<: !include ../global/esp8266.yaml
 
 esp8266:
   board: esp01_1m
@@ -124,15 +123,3 @@ text_sensor:
   - platform: debug
     device:
       name: ${name}_deviceinfo
-  - platform: template
-    name: ${name}_devicename
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Shelly 2.5"};
-  - platform: template
-    name: ${name}_devicetype
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Switch"};
