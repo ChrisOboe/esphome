@@ -2,6 +2,7 @@ esphome:
   name: ${name}
   name_add_mac_suffix: true
   build_path: ../build/${name}
+  esp8266_restore_from_flash: true
 
 # disable mdns
 mdns:
@@ -31,8 +32,3 @@ wifi:
   ap:
     ssid: "esphome"
     password: !secret ap_password
-
-logger:
-
-debug:
-    update_interval: 5s

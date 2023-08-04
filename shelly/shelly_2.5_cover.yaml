@@ -200,6 +200,7 @@ switch:
     entity_category: config
     optimistic: true
     restore_state: true
+    restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: template
     id: reverse_cover
@@ -207,6 +208,7 @@ switch:
     entity_category: config
     optimistic: true
     restore_state: true
+    restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: shutdown
     id: _shutdown
