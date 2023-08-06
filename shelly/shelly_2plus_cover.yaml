@@ -1,0 +1,316 @@
+substitutions:
+  name: shelly_2plus_cover
+
+logger:
+
+<<: !include ../global/global.yaml
+
+esp32:
+  board: esp32doit-devkit-v1
+
+
+i2c:
+  sda: GPIO26
+  scl: GPIO25
+
+sensor:
+  - <<: !include ../global/wifi_sensor.yaml
+  - platform: uptime
+    id: timer
+    name: ${name}_uptime
+
+  - platform: ade7953
+    irq_pin: GPIO27
+    update_interval: 0.5s
+    voltage:
+      name: ${name}_voltage
+      filters:
+        - or:
+          - delta: 1
+          - heartbeat: 60s
+    current_a:
+      id: current_a
+      filters:
+        - delta: 0.00434782608
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: current_open
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: current_close
+              state: !lambda return x;
+
+    current_b:
+      id: current_b
+      filters:
+        - delta: 0.00434782608
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: current_close
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: current_open
+              state: !lambda return x;
+
+    active_power_a:
+      id: power_a
+      filters:
+        - delta: 1
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: power_open
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: power_close
+              state: !lambda return x;
+
+    active_power_b:
+      id: power_b
+      filters:
+        - delta: 1
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: power_close
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: power_open
+              state: !lambda return x;
+
+  - platform: ntc
+    sensor: temp_resistance_reading
+    name: ${name}_temperature
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    icon: "mdi:thermometer"
+    calibration:
+      b_constant: 3350
+      reference_resistance: 4.7kOhm
+      reference_temperature: 298.15K
+    on_value_range:
+      above: 90
+      then:
+        - switch.turn_on: _shutdown
+
+  - platform: template
+    id: current_open
+    name: ${name}_current_open
+    unit_of_measurement: "A"
+    device_class: "current"
+    state_class: "measurement"
+    filters:
+      - lambda: !lambda |-
+          return x < 0.0 ? 0.0 : x;
+      - or:
+        - delta: 0.00434782608
+        - heartbeat: 60s
+
+  - platform: template
+    id: current_close
+    name: ${name}_current_close
+    unit_of_measurement: "A"
+    device_class: "current"
+    state_class: "measurement"
+    filters:
+      - lambda: !lambda |-
+          return x < 0.0 ? 0.0 : x;
+      - or:
+        - delta: 0.00434782608
+        - heartbeat: 60s
+
+  - platform: template
+    id: power_open
+    name: ${name}_power_open
+    unit_of_measurement: "W"
+    device_class: "power"
+    state_class: "measurement"
+    filters:
+      - multiply: -1
+      - lambda: !lambda |-
+          return x < 0.0 ? 0.0 : x;
+      - or:
+        - delta: 1
+        - heartbeat:  60s
+
+  - platform: template
+    id: power_close
+    unit_of_measurement: "W"
+    device_class: "power"
+    state_class: "measurement"
+    name: ${name}_power_close
+    filters:
+      - multiply: -1
+      - lambda: !lambda |-
+          return x < 0.0 ? 0.0 : x;
+      - or:
+        - delta: 1
+        - heartbeat: 60s
+
+  - platform: resistance
+    id: temp_resistance_reading
+    sensor: temp_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 5.6kOhm
+  - platform: adc
+    id: temp_analog_reading
+    pin: GPIO35
+    attenuation: 11db
+
+# led
+output:
+  - platform: gpio
+    id: led
+    pin:
+      number: GPIO0
+      inverted: true
+
+switch:
+  - platform: gpio
+    id: powered_a
+    pin: GPIO13
+    restore_mode: RESTORE_DEFAULT_OFF
+    interlock: &interlock [powered_a, powered_b]
+    interlock_wait_time: 200ms
+
+  - platform: gpio
+    id: powered_b
+    pin: GPIO12
+    restore_mode: RESTORE_DEFAULT_OFF
+    interlock: *interlock
+    interlock_wait_time: 200ms
+
+  - platform: template
+    id: reverse_switch
+    name: ${name}_reverse_switch
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: reverse_cover
+    name: ${name}_reverse_cover
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: shutdown
+    id: _shutdown
+
+binary_sensor:
+  - platform: gpio
+    id: switch_a
+    pin:
+      number: GPIO18
+    on_press:
+      then:
+        if:
+          condition:
+            switch.is_on: reverse_switch
+          then:
+            - cover.close: cvr
+            - binary_sensor.template.publish:
+                id: switch_close
+                state: true
+          else:
+            - cover.open: cvr
+            - binary_sensor.template.publish:
+                id: switch_open
+                state: true
+    on_release:
+      then:
+        - cover.stop: cvr
+        - binary_sensor.template.publish:
+            id: switch_open
+            state: false
+        - binary_sensor.template.publish:
+            id: switch_close
+            state: false
+
+  - platform: gpio
+    id: switch_b
+    pin:
+      number: GPIO5
+    on_press:
+      if:
+        condition:
+          switch.is_on: reverse_switch
+        then:
+          - cover.open: cvr
+          - binary_sensor.template.publish:
+              id: switch_open
+              state: true
+        else:
+          - cover.close: cvr
+          - binary_sensor.template.publish:
+              id: switch_close
+              state: true
+    on_release:
+      then:
+        - cover.stop: cvr
+        - binary_sensor.template.publish:
+            id: switch_open
+            state: false
+        - binary_sensor.template.publish:
+            id: switch_close
+            state: false
+
+  - platform: template
+    name: ${name}_switch_open
+    id: switch_open
+
+  - platform: template
+    name: ${name}_switch_close
+    id: switch_close
+
+cover:
+  - platform: current_based
+    id: cvr
+    name: ${name}_cover
+    open_sensor: current_open
+    open_moving_current_threshold: 0.2
+    open_obstacle_current_threshold: 0.8
+    open_duration: 36s
+    open_action:
+      if:
+        condition:
+          switch.is_on: reverse_cover
+        then:
+          - switch.turn_on: powered_a
+        else:
+          - switch.turn_on: powered_b
+
+    close_sensor: current_close
+    close_moving_current_threshold: 0.2
+    close_obstacle_current_threshold: 0.8
+    close_duration: 32s
+    close_action:
+      if:
+        condition:
+          switch.is_on: reverse_cover
+        then:
+          - switch.turn_on: powered_b
+        else:
+          - switch.turn_on: powered_a
+
+    stop_action:
+      - switch.turn_off: powered_a
+      - switch.turn_off: powered_b

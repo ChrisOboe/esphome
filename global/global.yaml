@@ -2,7 +2,6 @@ esphome:
   name: ${name}
   name_add_mac_suffix: true
   build_path: ../build/${name}
-  esp8266_restore_from_flash: true
 
 # disable mdns
 mdns:
@@ -20,7 +19,6 @@ ota:
 wifi:
   domain: ".gob.zone"
   fast_connect: false
-  passive_scan: false
   networks:
     - ssid: "banzai_2.4"
       password: !secret kendo_password
