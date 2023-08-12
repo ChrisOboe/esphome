@@ -3,6 +3,8 @@ substitutions:
 
 <<: !include ../global/global.yaml
 
+logger:
+
 esp8266:
   board: esp01_1m
   restore_from_flash: true
@@ -24,6 +26,7 @@ switch:
   - platform: template
     id: enable_button
     name: ${name}_enable_button
+    restore_mode: RESTORE_DEFAULT_ON
     entity_category: config
     optimistic: true
 
@@ -43,7 +46,7 @@ binary_sensor:
 
 sensor:
   - <<: !include ../global/wifi_sensor.yaml
-  - <<: !include ../global/debug_sensor.yaml
+#  - <<: !include ../global/debug_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
   - platform: hlw8012
@@ -83,18 +86,6 @@ sensor:
 
 text_sensor:
   - <<: !include ../global/wifi_text_sensor.yaml
-  - platform: debug
-    device:
-      name: ${name}_deviceinfo
-  - platform: template
-    name: ${name}_devicename
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Nous A1T"};
-  - platform: template
-    name: ${name}_devicetype
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Smartplug"};
+#  - platform: debug
+#    device:
+#      name: ${name}_deviceinfo
