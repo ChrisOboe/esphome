@@ -1,7 +1,8 @@
 {
   inputs = {
-    nixpkgs.url = "https://github.com/NixOS/nixpkgs/archive/pull/229461/head.tar.gz";
+    #nixpkgs.url = "https://github.com/NixOS/nixpkgs/archive/pull/229461/head.tar.gz";
     #nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 

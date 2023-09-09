@@ -1,13 +1,10 @@
 substitutions:
   name: shelly_2plus_cover
 
-logger:
-
 <<: !include ../global/global.yaml
 
 esp32:
   board: esp32doit-devkit-v1
-
 
 i2c:
   sda: GPIO26
@@ -100,6 +97,7 @@ sensor:
     sensor: temp_resistance_reading
     name: ${name}_temperature
     unit_of_measurement: "°C"
+    entity_category: diagnostic
     accuracy_decimals: 1
     icon: "mdi:thermometer"
     calibration:
