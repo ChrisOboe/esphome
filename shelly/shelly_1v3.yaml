@@ -19,19 +19,18 @@ switch:
     name: ${name}_enable_button
     entity_category: config
     optimistic: true
-    restore_state: true
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: template
     id: enable_switch
     name: ${name}_enable_switch
     entity_category: config
     optimistic: true
-    restore_state: true
+    restore_mode: RESTORE_DEFAULT_ON
   - platform: template
     id: standalone_mode
     name: ${name}_standalone_mode
     entity_category: config
     optimistic: true
-    restore_state: true
     restore_mode: RESTORE_DEFAULT_ON
 
 binary_sensor:
@@ -64,27 +63,8 @@ binary_sensor:
           - switch.toggle: powered
 
 sensor:
-  - <<: !include ../global/wifi_sensor.yaml
-  - <<: !include ../global/debug_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
 text_sensor:
   - <<: !include ../global/wifi_text_sensor.yaml
-  - platform: debug
-    device:
-      name: ${name}_deviceinfo
-  - platform: template
-    name: ${name}_devicename
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Shelly 1v3"};
-  - platform: template
-    name: ${name}_devicetype
-    entity_category: diagnostic
-    update_interval: 600s
-    lambda: |-
-      return {"Switch"};
-
-
