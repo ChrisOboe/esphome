@@ -1,7 +1,7 @@
-esphome:
-  name: ${name}
-  name_add_mac_suffix: true
-  build_path: ../build/${name}
+#esphome:
+#  name: ${name}
+#  name_add_mac_suffix: true
+#  build_path: ../build/${name}
 
 # disable mdns
 mdns:
@@ -19,7 +19,7 @@ ota:
 wifi:
   domain: ".gob.zone"
   fast_connect: false
-  reboot_timeout: "1m"
+  reboot_timeout: "60s"
   networks:
     - ssid: "banzai_2.4"
       password: !secret kendo_password

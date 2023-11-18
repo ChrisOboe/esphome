@@ -1,27 +1,51 @@
+substitutions:
+  name: doorbell
+
+<<: !include ../global/global.yaml
+
 esp32:
   board: wemos_d1_mini32
-  framework:
-    type: arduino
+
+logger:
+  level: VERY_VERBOSE
 
 esphome:
-  name: doorbell
-  libraries:
-    - Wire
-    - SPI
-    - WiFi
-    - WiFiClientSecure
-    - ESP8266Audio
-    - https://github.com/sonocotta/esp32-tas5805m-dac
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build/${name}
   includes:
-    - playSound.hpp
-    - sound.h
+    - tas5805m/tas5805m.hpp
 
-output:
-  - platform: custom
-    type: binary
-    lambda: |-
-      auto playSound = new PlaySoundOutput();
-      App.register_component(playSound);
-      return {playSound};
-    outputs:
-      id: playSoundOutput
+custom_component:
+- lambda: |-
+    auto tas5805m = new Tas5805m();
+    return {tas5805m};
+  components:
+  - id: tas5805m
+
+i2c:
+  sda: GPIO21
+  scl: GPIO27
+
+i2s_audio:
+  i2s_lrclk_pin: GPIO25 # WS/FS
+  i2s_bclk_pin: GPIO26  # SCK
+
+#speaker:
+#  - platform: i2s_audio
+#    dac_type: external
+#    i2s_dout_pin: GPIO22 # SD
+#    mode: stereo
+
+media_player:
+  - platform: i2s_audio
+    name: "${name}_media_player"
+    dac_type: external
+    i2s_dout_pin: GPIO022 # SD
+    mode: stereo
+
+button:
+  - platform: template
+    name: "Play Media"
+    on_press:
+      - media_player.play_media: "http://download.samplelib.com/mp3/sample-3s.mp3"
