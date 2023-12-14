@@ -1,0 +1,90 @@
+substitutions:
+  name: btclient
+
+<<: !include ../global/global.yaml
+
+logger:
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: C4:1F:81:52:62:C0
+    id: lhb_f45e4bbb # links
+  - mac_address: F0:D7:95:1D:1F:D5
+    id: lhb_9b744762
+
+sensor:
+    # 0x00 sleep
+    # 0x01 on
+    # 0x0b on
+    # 0x02 standby
+    # 0x09 starting
+  - platform: ble_client
+    type: characteristic
+    ble_client_id: lhb_f45e4bbb
+    name: ${name}_lhb_f45e4bbb_rawstate
+    id: "lhb_f45e4bbb_rawstate"
+    service_uuid: '00001523-1212-efde-1523-785feabcd124'
+    characteristic_uuid: '00001525-1212-efde-1523-785feabcd124'
+    icon: 'mdi:access-point'
+    update_interval: 01min
+  - platform: ble_client
+    type: characteristic
+    ble_client_id: lhb_9b744762
+    name: ${name}_lhb_9b744762_rawstate
+    id: "lhb_9b744762_rawstate"
+    service_uuid: '00001523-1212-efde-1523-785feabcd124'
+    characteristic_uuid: '00001525-1212-efde-1523-785feabcd124'
+    icon: 'mdi:access-point'
+    update_interval: 01min
+
+switch:
+  - platform: template
+    name: ${name}_lhb_f45e4bbb_switch
+    turn_on_action:
+      - ble_client.ble_write:
+          id: lhb_f45e4bbb
+          service_uuid: 00001523-1212-efde-1523-785feabcd124
+          characteristic_uuid: 00001525-1212-efde-1523-785feabcd124
+          # List of bytes to write.
+          value: 0x01
+    turn_off_action:
+      - ble_client.ble_write:
+          id: lhb_f45e4bbb
+          service_uuid: 00001523-1212-efde-1523-785feabcd124
+          characteristic_uuid: 00001525-1212-efde-1523-785feabcd124
+          # List of bytes to write.
+          value: 0x00
+    lambda: |-
+      if (id(lhb_f45e4bbb_rawstate).state) {
+        return true;
+      } else {
+        return false;
+      }
+  - platform: template
+    name: ${name}_lhb_9b744762_switch
+    turn_on_action:
+      - ble_client.ble_write:
+          id: lhb_9b744762
+          service_uuid: 00001523-1212-efde-1523-785feabcd124
+          characteristic_uuid: 00001525-1212-efde-1523-785feabcd124
+          # List of bytes to write.
+          value: 0x01
+    turn_off_action:
+      - ble_client.ble_write:
+          id: lhb_9b744762
+          service_uuid: 00001523-1212-efde-1523-785feabcd124
+          characteristic_uuid: 00001525-1212-efde-1523-785feabcd124
+          # List of bytes to write.
+          value: 0x00
+    lambda: |-
+      if (id(lhb_9b744762_rawstate).state) {
+        return true;
+      } else {
+        return false;
+      }

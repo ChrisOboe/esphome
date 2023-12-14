@@ -4,7 +4,7 @@ substitutions:
 <<: !include ../global/global.yaml
 
 esp8266:
-  board: esp01_1m
+  board: esp8285
   restore_from_flash: true
 #  early_pin_init: false
 
@@ -18,18 +18,19 @@ output:
   - platform: esp8266_pwm
     pin: GPIO13
     id: gpio_13
-#  - platform: esp8266_pwm
-#    pin: GPIO15
-#    id: gpio_15
+  - platform: esp8266_pwm
+    pin: GPIO15
+    id: gpio_15
 
 light:
-  - platform: rgb
+  - platform: rgbw
     id: ${name}_light
     name: ${name}_light
-    red: gpio_5
-    green: gpio_13
-    blue: gpio_12
-#    white: gpio_15
+    red: gpio_12
+    blue: gpio_13
+    green: gpio_5
+    white: gpio_15
+    color_interlock: false
 #    gamma_correct: 1.8
 
 sensor:

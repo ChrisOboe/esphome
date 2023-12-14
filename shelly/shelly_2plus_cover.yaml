@@ -16,7 +16,7 @@ sensor:
     id: timer
     name: ${name}_uptime
 
-  - platform: ade7953
+  - platform: ade7953_i2c
     irq_pin: GPIO27
     update_interval: 0.5s
     voltage:

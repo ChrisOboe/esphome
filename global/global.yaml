@@ -1,7 +1,7 @@
-#esphome:
-#  name: ${name}
-#  name_add_mac_suffix: true
-#  build_path: ../build/${name}
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build/${name}
 
 # disable mdns
 mdns:
@@ -15,6 +15,8 @@ api:
 # enable ota update
 ota:
   password: !secret flash_password
+
+logger:
 
 wifi:
   domain: ".gob.zone"
