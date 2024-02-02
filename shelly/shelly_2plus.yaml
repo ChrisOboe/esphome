@@ -36,20 +36,25 @@ sensor:
     current_b:
       name: ${name}_current_o2
       filters:
-        - delta: 0.1
-        - heartbeat: 60s
+        - or:
+          - delta: 0.1
+          - heartbeat: 60s
 
     active_power_a:
       name: ${name}_power_o1
       filters:
-        - delta: 1
-        - heartbeat: 60s
+        - multiply: -1
+        - or:
+          - delta: 1
+          - heartbeat: 60s
 
     active_power_b:
       name: ${name}_power_o2
       filters:
-        - delta: 1
-        - heartbeat: 60s
+        - multiply: -1
+        - or:
+          - delta: 1
+          - heartbeat: 60s
 
   - platform: ntc
     sensor: temp_resistance_reading
@@ -101,19 +106,36 @@ switch:
   - platform: shutdown
     id: _shutdown
 
+  - platform: template
+    id: swap_switch
+    name: ${name}_swap_switch
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
 binary_sensor:
   - platform: gpio
     id: switch_s1
     pin:
       number: GPIO18
     on_state:
-      then:
-        - switch.toggle: powered_o1
+      if:
+        condition:
+          - switch.is_on: swap_switch
+        then:
+          - switch.toggle: powered_o2
+        else:
+          - switch.toggle: powered_o1
 
   - platform: gpio
     id: switch_s2
     pin:
       number: GPIO5
     on_state:
-      then:
-        - switch.toggle: powered_o2
+      if:
+        condition:
+          - switch.is_on: swap_switch
+        then:
+          - switch.toggle: powered_o1
+        else:
+          - switch.toggle: powered_o2
