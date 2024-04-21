@@ -1,0 +1,46 @@
+substitutions:
+  name: garagentor
+
+<<: !include ../global/global.yaml
+
+logger:
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+button:
+  - platform: template
+    name: ${name}_up
+    on_press:
+      - output.turn_on: r1
+      - delay: 0.3s
+      - output.turn_off: r1
+  - platform: template
+    name: ${name}_down
+    on_press:
+      - output.turn_on: r2
+      - delay: 0.3s
+      - output.turn_off: r2
+  - platform: template
+    name: ${name}_light
+    on_press:
+      - output.turn_on: r3
+      - delay: 0.3s
+      - output.turn_off: r3
+
+output:
+  - platform: gpio
+    id: r1
+    pin: GPIO32
+  - platform: gpio
+    id: r2
+    pin: GPIO33
+  - platform: gpio
+    id: r3
+    pin: GPIO25
+  - platform: gpio
+    id: r4
+    pin: GPIO26
+
