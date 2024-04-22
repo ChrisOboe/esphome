@@ -19,9 +19,9 @@ sensor:
     id: timer
     name: ${name}_uptime
 
-  - platform: ade7953
+  - platform: ade7953_i2c
     irq_pin: GPIO16
-    update_interval: 0.5s
+    #update_interval: 0.5s
     voltage:
       name: ${name}_voltage
       filters:
@@ -200,7 +200,6 @@ switch:
     name: ${name}_reverse_switch
     entity_category: config
     optimistic: true
-    restore_state: true
     restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: template
@@ -208,17 +207,12 @@ switch:
     name: ${name}_reverse_cover
     entity_category: config
     optimistic: true
-    restore_state: true
     restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: shutdown
     id: _shutdown
 
 binary_sensor:
-  - platform: gpio
-    id: ADE7953
-    pin: GPIO16
-
   - platform: gpio
     id: switch_a
     pin:
