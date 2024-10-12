@@ -1,0 +1,75 @@
+substitutions:
+  name: "sinilink_xy-wpce"
+
+<<: !include ../global/global.yaml
+
+esp8266:
+  # Specifically a 'ESP8285H16' with 2MB built in flash
+  # See: https://docs.platformio.org/en/stable/boards/espressif8266/esp8285.html
+  board: esp8285
+  restore_from_flash: false
+
+#status_led:
+#  pin:
+#    number: GPIO02
+#    inverted: True
+
+output:
+  - platform: gpio
+    id: out_relay
+    pin: GPIO5
+
+binary_sensor:
+  - name: "${name}_button_onboard"
+    platform: gpio
+    pin:
+      number: GPIO04
+      mode: INPUT_PULLUP
+      inverted: True
+
+  - name: "${name}_powered"
+    platform: gpio
+    id: inp_power_status
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+      inverted: True
+
+  - name: "${name}_button_pc"
+    platform: gpio
+    pin:
+      number: GPIO10
+      mode: INPUT_PULLUP
+      inverted: True
+
+    # To accurately mimic the "button wired directly to motherboard" function, use on_press/on_release
+    on_press:
+      - output.turn_on: out_relay
+    on_release:
+      - output.turn_off: out_relay
+
+script:
+  - id: regular_press
+    mode: single
+    then:
+      - output.turn_on: out_relay
+      - delay: .5s
+      - output.turn_off: out_relay
+
+switch:
+  - name: "${name}_power"
+    id: sw_pc_power
+    platform: template
+    lambda: |-
+      if (id(inp_power_status).state) {
+        return true;
+      } else {
+        return false;
+      }
+
+    # Mimic the user pressing the button
+    turn_on_action:
+      - script.execute: regular_press
+    turn_off_action:
+      - script.execute: regular_press
+

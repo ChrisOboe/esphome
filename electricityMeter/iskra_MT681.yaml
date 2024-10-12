@@ -1,5 +1,7 @@
 substitutions:
   name: iskra_mt681
+  server_id0: 0649534b010722fb024a
+  server_id1: 0649534b010722fb0082
 
 <<: !include ../global/global.yaml
 
@@ -9,7 +11,7 @@ esp8266:
 #  early_pin_init: false
 
 logger:
-    baud_rate: 0
+    baud_rate: 0 # don't log through uart since we need to use this for comm
 
 uart:
  - id: uart_0
@@ -38,7 +40,7 @@ sensor:
 
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "1-0:1.8.0"
     name: ${name}_1_energy
     unit_of_measurement: kWh
@@ -49,7 +51,7 @@ sensor:
       - multiply: 0.0001
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "1-0:1.8.1"
     name: ${name}_1ht_energy
     unit_of_measurement: kWh
@@ -60,7 +62,7 @@ sensor:
       - multiply: 0.0001
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "1-0:1.8.2"
     name: ${name}_1nt_energy
     unit_of_measurement: kWh
@@ -71,7 +73,7 @@ sensor:
       - multiply: 0.0001
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "1-0:16.7.0"
     name: ${name}_1_power
     unit_of_measurement: W
@@ -79,7 +81,7 @@ sensor:
 
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "1-0:1.8.0"
     name: ${name}_2_energy
     unit_of_measurement: kWh
@@ -90,7 +92,7 @@ sensor:
       - multiply: 0.0001
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "1-0:1.8.1"
     name: ${name}_2ht_energy
     unit_of_measurement: kWh
@@ -101,7 +103,7 @@ sensor:
       - multiply: 0.0001
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "1-0:1.8.2"
     name: ${name}_2nt_energy
     unit_of_measurement: kWh
@@ -112,7 +114,7 @@ sensor:
       - multiply: 0.0001
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "1-0:16.7.0"
     name: ${name}_2_power
     unit_of_measurement: W
@@ -123,38 +125,38 @@ text_sensor:
 
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "129-129:199.130.3"
     name: ${name}_1_vendorid
     format: text
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "1-0:0.0.9"
     name: ${name}_1_deviceid
     format: hex
   - platform: sml
     sml_id: sml_0
-    server_id: "0649534b010722fb024a"
+    server_id: ${server_id0}
     obis_code: "129-129:199.130.5"
     name: ${name}_1_publickey
     format: hex
 
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "129-129:199.130.3"
     name: ${name}_2_vendorid
     format: text
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "1-0:0.0.9"
     name: ${name}_2_deviceid
     format: hex
   - platform: sml
     sml_id: sml_1
-    server_id: "0649534b010722fb0082"
+    server_id: ${server_id1}
     obis_code: "129-129:199.130.5"
     name: ${name}_2_publickey
     format: hex

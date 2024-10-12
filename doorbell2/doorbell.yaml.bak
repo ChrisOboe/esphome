@@ -1,0 +1,65 @@
+substitutions:
+  name: esplouder
+
+<<: !include ../global/global.yaml
+
+esp32:
+  board: wemos_d1_mini32
+  #board: esp32cam
+  #framework:
+  #  type: esp-idf # doesn't support cam
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build/${name}
+  includes:
+    - tas5805m.hpp
+    - fallback.hpp
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+i2c:
+  sda: GPIO21
+  scl: GPIO27
+
+i2s_audio:
+  i2s_lrclk_pin: GPIO25 # WS/FS
+  i2s_bclk_pin: GPIO26  # SCK
+
+switch:
+- platform: custom
+  lambda: |-
+    auto tas5805m = new TAS5805();
+    App.register_component(tas5805m);
+    return {tas5805m};
+  switches:
+    name: "Enable Amp"
+
+speaker:
+  - platform: i2s_audio
+    dac_type: external
+    i2s_dout_pin: GPIO022
+    mode: mono
+
+#media_player:
+#  - platform: i2s_audio
+#    name: "media_player"
+#    dac_type: external
+#    i2s_dout_pin: GPIO022 # SD
+#    mode: mono
+
+button:
+#  - platform: template
+#    name: "Play Media"
+#    on_press:
+#      - media_player.play_media: "http://download.samplelib.com/mp3/sample-3s.mp3"
+  - platform: template
+    name: "Play embedded Media"
+    on_press:
+      - speaker.play: !lambda return fallback;
+
+
+

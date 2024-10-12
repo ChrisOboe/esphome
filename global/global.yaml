@@ -14,7 +14,8 @@ api:
 
 # enable ota update
 ota:
-  password: !secret flash_password
+  - platform: esphome
+    password: !secret flash_password
 
 logger:
 

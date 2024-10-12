@@ -2,15 +2,12 @@ substitutions:
   name: esp32_cam
 
 <<: !include ../global/global.yaml
-<<: !include ../global/esp32.yaml
 
 esp32:
   board: node32s
   #board: esp32cam
   #framework:
-  #  type: esp-idf
-
-
+  #  type: esp-idf # doesn't support cam
 
 output:
   - platform: gpio
@@ -29,7 +26,8 @@ esp32_camera_web_server:
     mode: snapshot
 
 esp32_camera:
-  name: "${name}_camera"
+  id: "camera"
+  #name: "${name}_camera"
   external_clock:
     pin: GPIO0
     frequency: 20MHz
