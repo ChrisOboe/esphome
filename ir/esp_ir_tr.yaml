@@ -20,11 +20,10 @@ remote_receiver:
     mode:
       input: true
       pullup: true
-  dump: pronto
-  buffer_size: 200B
+  dump: all
+  #buffer_size: 2kB
 
 sensor:
-  - <<: !include ../global/wifi_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
 
