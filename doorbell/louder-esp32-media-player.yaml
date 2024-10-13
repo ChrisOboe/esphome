@@ -1,0 +1,79 @@
+<<: !include ../global/global.yaml
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/esphome/voice-kit
+      ref: dev
+    components:
+      - aic3204
+      - audio_dac
+      - i2s_audio
+      - media_player
+      - micro_wake_word
+      - microphone
+      - nabu
+      - nabu_microphone
+      - voice_assistant
+      - voice_kit
+    refresh: 0s
+
+esphome:
+  name: "doorbell"
+  name_add_mac_suffix: true
+  includes:
+    - louderesp32.h
+  platformio_options:
+    lib_deps: "Wire"
+  on_boot:
+    priority: 800
+    then:
+    ## Set a volume limit just to be safe...
+    - media_player.volume_set:
+        id: louderesp32
+        volume: 20%
+
+esp32:
+  board: mhetesp32minikit
+  framework:
+    type: esp-idf
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+  level: DEBUG
+  
+switch:
+  - platform: custom
+    lambda: |-
+      auto tas5805 = new TAS5805();
+      App.register_component(tas5805);
+      return {tas5805};
+    switches:
+      name: "Enable Amp"
+
+i2c:
+  sda: GPIO21
+  scl: GPIO27
+  scan: True
+  id: i2c_component
+
+i2s_audio:
+  i2s_lrclk_pin: GPIO25
+  i2s_bclk_pin: GPIO26
+
+media_player:
+  - platform: nabu
+    name: mediaPlayer
+    id: louderesp32
+    i2s_dout_pin: GPIO22
+
+#media_player:
+#  - platform: i2s_audio
+#    name: mediaPlayer
+#    id: louderesp32
+#    dac_type: external
+#    i2s_dout_pin: GPIO22
+#    mode: stereo
