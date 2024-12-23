@@ -48,6 +48,12 @@ binary_sensor:
     on_release:
       - output.turn_off: out_relay
 
+button:
+  - platform: template
+    name: "${name}_press"
+    on_press:
+      - script.execute: regular_press
+
 script:
   - id: regular_press
     mode: single
