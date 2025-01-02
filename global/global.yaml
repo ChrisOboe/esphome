@@ -24,9 +24,5 @@ wifi:
   fast_connect: false
   reboot_timeout: "60s"
   networks:
-    - ssid: "banzai_2.4"
-      password: !secret kendo_password
-    - ssid: "kendo_2.4"
-      password: !secret kendo_password
     - ssid: "gob"
       password: !secret gob_password

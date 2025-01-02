@@ -1,0 +1,4 @@
+substitutions:
+  name: ford-cmax
+
+<<: !include ./wican.yaml

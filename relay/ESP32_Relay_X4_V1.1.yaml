@@ -1,14 +1,79 @@
 substitutions:
   name: garagentor
+  mac_corsa: "54:32:04:85:EE:C6"
+  mac_cmax: "54:32:04:85:EB:66"
 
 <<: !include ../global/global.yaml
 
 logger:
 
 esp32:
+  # todo: wrong board. this expects 4mb real has 2mb
   board: esp32dev
   framework:
     type: esp-idf
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: false
+  on_ble_manufacturer_data_advertise:
+    # corsa
+    - mac_address: ${mac_corsa}
+      manufacturer_id: FFFF
+      then:
+        - lambda: |-
+            float value = *((float*)&x[1]);
+            id(corsa_voltage).publish_state(value);
+    # cmax
+    - mac_address: ${mac_cmax}
+      manufacturer_id: FFFF
+      then:
+        - lambda: |-
+            float value = *((float*)&x[1]);
+            id(cmax_voltage).publish_state(value);
+
+sensor:
+  - platform: template
+    id: corsa_voltage
+    name: "Opel Corsa Battery Voltage"
+    icon: "mdi:car-battery"
+    unit_of_measurement: "V"
+    filters:
+      - clamp:
+          min_value: 2
+          max_value: 20
+          ignore_out_of_range: true
+      - delta: 0.1%
+
+  - platform: template
+    id: cmax_voltage
+    name: "Ford C-Max Battery Voltage"
+    icon: "mdi:car-battery"
+    unit_of_measurement: "V"
+    filters:
+      - clamp:
+          min_value: 2
+          max_value: 20
+          ignore_out_of_range: true
+      - delta: 0.1%
+
+
+binary_sensor:
+  # we should receive ble every two minutes so we use a timeout of 130s
+  - platform: ble_presence
+    device_class: presence
+    icon: "mdi:car"
+    timeout: 130s 
+    mac_address: ${mac_corsa}
+    name: "Opel Corsa"
+
+  - platform: ble_presence
+    device_class: presence
+    icon: "mdi:car"
+    timeout: 130s
+    mac_address: ${mac_cmax}
+    name: "Ford C-Max"
+
 
 button:
   - platform: template
@@ -23,12 +88,11 @@ button:
       - output.turn_on: r2
       - delay: 0.3s
       - output.turn_off: r2
-  - platform: template
+
+light:
+  - platform: binary
     name: ${name}_light
-    on_press:
-      - output.turn_on: r3
-      - delay: 0.3s
-      - output.turn_off: r3
+    output: r3
 
 output:
   - platform: gpio
@@ -40,6 +104,7 @@ output:
   - platform: gpio
     id: r3
     pin: GPIO25
+    inverted: true
   - platform: gpio
     id: r4
     pin: GPIO26

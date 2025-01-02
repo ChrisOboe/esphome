@@ -1,0 +1,166 @@
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build/${name}
+
+mdns:
+  disabled: true
+
+# enable hass api TODO: mqtt
+api:
+  encryption:
+      key: "oz8pL8c0INEcq+dL//08pwPrtI+fa7O4cHsEcELqKzM="
+
+# enable ota update
+ota:
+  - platform: esphome
+    password: "monitor"
+
+logger:
+
+wifi:
+  id: wlan
+  domain: ".gob.zone"
+  fast_connect: false
+  reboot_timeout: "0s"
+  enable_on_boot: false
+  networks:
+    - ssid: "gob"
+      password: "pfefferpapageiknotenhaken"
+    - ssid: "kolossus"
+      password: "penisfisch"
+
+esp32:
+  variant: ESP32C3
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+#logger:
+#  level: INFO #NONE# ERROR #INFO #DEBUG  #VERBOSE
+#  #baud_rate: 0 #to disable logging via UART
+#  logs:
+#    text_sensor : ERROR
+#    canbus: INFO
+
+esp32_ble:
+  id: ble
+  io_capability: none
+
+esp32_ble_server:
+  id: bles
+  manufacturer_data: [0xFF, 0xFF, 0xF1, 0x00]
+
+output:
+  - id: blue_led_output
+    platform: gpio
+    pin: 7
+  - id: green_led_output
+    platform: gpio
+    pin: {number: 8, inverted: true}
+  - id: yellow_led_output
+    platform: gpio
+    pin: {number: 9, inverted: true}
+
+light:
+  - platform: binary
+    id: blue_led
+    output: blue_led_output
+    restore_mode: ALWAYS_ON
+    name: "blue"
+  - platform: binary
+    id: green_led
+    output: green_led_output
+    restore_mode: ALWAYS_OFF
+    name: "green"
+  - platform: binary
+    id: yellow_led
+    output: yellow_led_output
+    restore_mode: ALWAYS_OFF
+    name: "yellow"
+
+canbus:
+  - platform: esp32_can
+    tx_pin: 0
+    rx_pin: 3
+    bit_rate: 500kbps
+    can_id: 0 # mandatory but we do not use it
+    on_frame:
+      # dump all frames to log
+      - can_id: 0x00000025
+        #can_id_mask: 0
+        then:
+          - lambda: |-
+              auto data_pretty = remote_transmission_request ? "n/a" : format_hex_pretty(x).c_str();
+              ESP_LOGI("eup_dump", "can_id: 0x%08x, rtr: %d, length: %d, content: %s", can_id, remote_transmission_request, x.size(), data_pretty);
+              ESP_LOGI("eup_dump", "angle: %f", (float)((int16_t)(x[1]<< 8) + x[0])*1.5);
+      - can_id: 0x00000025
+        then:
+          - lambda: |-
+              if (x.size() >= 5)
+                id(steer_angle).publish_state((float)((int16_t)(x[1]<< 8) + x[0])*1.5);
+
+sensor:
+  - platform: template
+    id: steer_angle
+    name: '${name} Steering Angle'
+    unit_of_measurement: '°'
+    accuracy_decimals: 0
+
+  - platform: adc
+    id: starter_battery_voltage
+    name: '${name} Battery Voltage'
+    pin: 4
+    attenuation: 12db # https://github.com/meatpiHQ/wican-fw/blob/bf212132f8e506f2c520e917daf86e53a1070302/main/sleep_mode.c#L234
+    filters:
+      - lambda: return x * 116 / 16; # https://github.com/meatpiHQ/wican-fw/blob/bf212132f8e506f2c520e917daf86e53a1070302/main/sleep_mode.c#L397
+    update_interval: 5s
+    samples: 5
+    unit_of_measurement: V
+    accuracy_decimals: 1
+    device_class: voltage
+    state_class: measurement
+    on_value:
+      then:
+        - lambda: |-
+            // count low voltage
+            static int low_voltage_count = 0;
+            if (id(starter_battery_voltage).state >= 12.9) {
+              // car running
+              low_voltage_count = 0;
+              id(ds).prevent_deep_sleep();
+
+            } else if (id(starter_battery_voltage).state >= 12.4 && id(starter_battery_voltage).state < 12.9) {
+              // car off
+              low_voltage_count = 0;
+              id(ds).allow_deep_sleep();
+
+            } else if (id(starter_battery_voltage).state < 12.4 && id(starter_battery_voltage).state > 6) {
+              // low battery
+              id(ds).allow_deep_sleep();
+              low_voltage_count += 1;
+
+            } else if (id(starter_battery_voltage).state <= 6) {
+              // powered via usb.
+              id(ds).prevent_deep_sleep();
+              id(wlan).enable();
+            }
+
+            // emit via ble
+            if (id(ble).is_active()) {
+               float f_value = id(starter_battery_voltage).state;
+               uint8_t* float_data = (uint8_t*)&f_value;
+               id(bles).set_manufacturer_data({0xFF,0xFF,0xF9,float_data[0], float_data[1], float_data[2], float_data[3]});
+            }
+
+            // dont consume power if power is really low
+            if (low_voltage_count >= 5) {
+              // deep sleep for a day
+              id(ds).set_sleep_duration(86400000);
+              id(ds).begin_sleep(true);
+            }
+           
+deep_sleep:
+  id: ds
+  run_duration: 10s
+  sleep_duration: 120s # every 2 mins should be enough
