@@ -91,7 +91,7 @@ button:
 
 light:
   - platform: binary
-    name: ${name}_light
+    name: "${name}_light"
     output: r3
 
 output:
