@@ -126,6 +126,12 @@ sensor:
             if (id(starter_battery_voltage).state >= 12.9) {
               // car running
               id(ds).prevent_deep_sleep();
+              if (id(ble).is_active() && esp_ble_tx_power_get(ESP_BLE_PWR_TYPE_ADV) != ESP_PWR_LVL_P9) {
+                esp_err_t err = esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
+                if (err != ESP_OK) {
+                  ESP_LOGW(TAG, "esp_ble_tx_power_set failed: %s", esp_err_to_name(err));
+                }
+              }
 
             } else if (id(starter_battery_voltage).state < 12.9 && id(starter_battery_voltage).state > 6) {
               // car off
