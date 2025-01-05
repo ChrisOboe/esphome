@@ -1,0 +1,29 @@
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build/${name}
+
+# disable mdns
+mdns:
+  disabled: true
+
+mqtt:
+  broker: chump.gob.zone
+  clean_session: true
+  discovery_unique_id_generator: mac
+  log_topic: null
+
+# enable ota update
+ota:
+  - platform: esphome
+    password: !secret flash_password
+
+logger:
+
+wifi:
+  domain: ".gob.zone"
+  fast_connect: false
+  reboot_timeout: "60s"
+  networks:
+    - ssid: "gob"
+      password: !secret gob_password
