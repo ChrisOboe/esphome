@@ -8,7 +8,6 @@ logger:
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-#  early_pin_init: false
 
 output:
   - platform: gpio
@@ -45,10 +44,6 @@ binary_sensor:
           - switch.toggle: powered
 
 sensor:
-  - <<: !include ../global/wifi_sensor.yaml
-#  - <<: !include ../global/debug_sensor.yaml
-  - platform: uptime
-    name: ${name}_uptime
   - platform: hlw8012
     sel_pin:
       number: GPIO12
@@ -82,10 +77,3 @@ sensor:
     change_mode_every: 1
     voltage_divider: 800
     update_interval: 0.5s
-
-
-text_sensor:
-  - <<: !include ../global/wifi_text_sensor.yaml
-#  - platform: debug
-#    device:
-#      name: ${name}_deviceinfo

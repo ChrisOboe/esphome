@@ -13,11 +13,6 @@ i2c:
   scl: GPIO25
 
 sensor:
-  - <<: !include ../global/wifi_sensor.yaml
-  - platform: uptime
-    id: timer
-    name: ${name}_uptime
-
   - platform: ade7953_i2c
     irq_pin: GPIO27
     update_interval: 0.5s

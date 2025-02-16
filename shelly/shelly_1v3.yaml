@@ -6,7 +6,6 @@ substitutions:
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-#  early_pin_init: false
 
 switch:
   - platform: gpio
@@ -14,6 +13,7 @@ switch:
     name: ${name}_powered
     pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
+
   - platform: template
     id: enable_button
     name: ${name}_enable_button
@@ -47,7 +47,7 @@ binary_sensor:
             - or:
               - switch.is_on: standalone_mode
               - not:
-                  api.connected:
+                  mqtt.connected:
         then:
           - switch.toggle: powered
     on_state:
@@ -58,13 +58,6 @@ binary_sensor:
             - or:
               - switch.is_on: standalone_mode
               - not:
-                  api.connected:
+                  mqtt.connected:
         then:
           - switch.toggle: powered
-
-sensor:
-  - platform: uptime
-    name: ${name}_uptime
-
-text_sensor:
-  - <<: !include ../global/wifi_text_sensor.yaml

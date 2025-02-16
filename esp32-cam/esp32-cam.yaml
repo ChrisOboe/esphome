@@ -6,8 +6,8 @@ substitutions:
 esp32:
   board: node32s
   #board: esp32cam
-  #framework:
-  #  type: esp-idf # doesn't support cam
+  framework:
+    type: esp-idf # doesn't support cam
 
 output:
   - platform: gpio
@@ -43,7 +43,3 @@ esp32_camera:
   #idle_framerate: 1 fps
   #resolution: 640x480
   #jpeg_quality: 10
-
-switch:
-  - platform: restart
-    name: "${name}_restart"

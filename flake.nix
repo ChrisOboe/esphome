@@ -18,15 +18,16 @@
       {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-            esphome
-            #(esphome.overrideAttrs {
-            #  src = fetchFromGitHub {
-            #    owner = "esphome";
-            #    repo = "esphome";
-            #    rev = "refs/tags/2024.8.3";
-            #    hash = "sha256-AeiEP1D2u2u8LMNKdBvoA2M3uO6Z9oSG2i5HwGin80M=";
-            #  };
-            #})
+            #esphome
+            # needs at least 2025 version since otherwise mqtt wont be unique
+            (esphome.overrideAttrs {
+              src = fetchFromGitHub {
+                owner = "esphome";
+                repo = "esphome";
+                rev = "refs/tags/2025.2.0b3";
+                hash = "sha256-s8R/0QK6tuOzy8wllrHVU5NkkoNH4wtx04dPWIrUXNs=";
+              };
+            })
             yq-go
             git-crypt
           ];

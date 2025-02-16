@@ -6,22 +6,14 @@ substitutions:
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-#  early_pin_init: false
 
 i2c:
   sda: GPIO12
   scl: GPIO14
 
 sensor:
-  - <<: !include ../global/wifi_sensor.yaml
-  #- <<: !include ../global/debug_sensor.yaml
-  - platform: uptime
-    id: timer
-    name: ${name}_uptime
-
   - platform: ade7953_i2c
     irq_pin: GPIO16
-    #update_interval: 0.5s
     voltage:
       name: ${name}_voltage
       filters:
@@ -173,12 +165,6 @@ sensor:
   - platform: adc
     id: temp_analog_reading
     pin: A0
-
-#text_sensor:
-#  - <<: !include ../global/wifi_text_sensor.yaml
-#  - platform: debug
-#    device:
-#      name: ${name}_deviceinfo
 
 switch:
   - platform: gpio

@@ -7,17 +7,24 @@ esphome:
 mdns:
   disabled: true
 
-# enable hass api
-api:
-  encryption:
-      key: !secret encryption_key
-
 # enable ota update
+# todo: refactor to download updates from a server
 ota:
   - platform: esphome
     password: !secret flash_password
 
+# only log relevant stuff
 logger:
+#  level: WARN
+
+mqtt:
+  broker: chump.gob.zone
+  clean_session: true
+  discovery_unique_id_generator: mac
+  discovery_object_id_generator: device_name
+  log_topic:
+    topic: "esphome/logs"
+    level: WARN
 
 wifi:
   domain: ".gob.zone"
