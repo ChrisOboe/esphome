@@ -12,90 +12,14 @@ i2c:
   scl: GPIO14
 
 sensor:
-  - platform: ade7953_i2c
-    irq_pin: GPIO16
-    voltage:
-      name: ${name}_voltage
-      filters:
-        - or:
-          - delta: 1
-          - heartbeat: 60s
-    current_a:
-      id: current_a
-      filters:
-        - delta: 0.00434782608
-        - lambda: !lambda |-
-            return x < 0.0 ? 0.0 : x;
-      on_raw_value:
-        if:
-          condition:
-            switch.is_on: reverse_cover
-          then:
-            sensor.template.publish:
-              id: current_open
-              state: !lambda return x;
-          else:
-            sensor.template.publish:
-              id: current_close
-              state: !lambda return x;
-
-    current_b:
-      id: current_b
-      filters:
-        - delta: 0.00434782608
-        - lambda: !lambda |-
-            return x < 0.0 ? 0.0 : x;
-      on_raw_value:
-        if:
-          condition:
-            switch.is_on: reverse_cover
-          then:
-            sensor.template.publish:
-              id: current_close
-              state: !lambda return x;
-          else:
-            sensor.template.publish:
-              id: current_open
-              state: !lambda return x;
-
-    active_power_a:
-      id: power_a
-      filters:
-        - delta: 1
-        - lambda: !lambda |-
-            return x < 0.0 ? 0.0 : x;
-      on_raw_value:
-        if:
-          condition:
-            switch.is_on: reverse_cover
-          then:
-            sensor.template.publish:
-              id: power_open
-              state: !lambda return x;
-          else:
-            sensor.template.publish:
-              id: power_close
-              state: !lambda return x;
-
-    active_power_b:
-      id: power_b
-      filters:
-        - delta: 1
-        - lambda: !lambda |-
-            return x < 0.0 ? 0.0 : x;
-      on_raw_value:
-        if:
-          condition:
-            switch.is_on: reverse_cover
-          then:
-            sensor.template.publish:
-              id: power_close
-              state: !lambda return x;
-          else:
-            sensor.template.publish:
-              id: power_open
-              state: !lambda return x;
-
+  - platform: resistance
+    id: temp_resistance_reading
+    sensor: temp_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 32kOhm
+  - platform: adc
+    id: temp_analog_reading
+    pin: A0
   - platform: ntc
     sensor: temp_resistance_reading
     name: ${name}_temperature
@@ -112,16 +36,81 @@ sensor:
       then:
         - switch.turn_on: _shutdown
 
+
+  - platform: ade7953_i2c
+    irq_pin: GPIO16
+    update_interval: 0.5s
+    voltage:
+      name: ${name}_voltage
+      filters:
+        - delta: 0.5
+    current_a:
+      id: current_a
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: current_close
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: current_open
+              state: !lambda return x;
+
+    current_b:
+      id: current_b
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: current_open
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: current_close
+              state: !lambda return x;
+
+    active_power_a:
+      id: power_a
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: power_close
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: power_open
+              state: !lambda return x;
+
+    active_power_b:
+      id: power_b
+      on_raw_value:
+        if:
+          condition:
+            switch.is_on: reverse_cover
+          then:
+            sensor.template.publish:
+              id: power_open
+              state: !lambda return x;
+          else:
+            sensor.template.publish:
+              id: power_close
+              state: !lambda return x;
+
+
   - platform: template
     id: current_open
     name: ${name}_current_open
     unit_of_measurement: "A"
     device_class: "current"
     state_class: "measurement"
-    filters:
-      - or:
-        - delta: 0.00434782608
-        - heartbeat: 60s
 
   - platform: template
     id: current_close
@@ -129,10 +118,6 @@ sensor:
     unit_of_measurement: "A"
     device_class: "current"
     state_class: "measurement"
-    filters:
-      - or:
-        - delta: 0.00434782608
-        - heartbeat: 60s
 
   - platform: template
     id: power_open
@@ -141,30 +126,38 @@ sensor:
     device_class: "power"
     state_class: "measurement"
     filters:
-      - or:
-        - delta: 1
-        - heartbeat:  60s
+      - delta: 1
 
   - platform: template
     id: power_close
+    name: ${name}_power_close
     unit_of_measurement: "W"
     device_class: "power"
     state_class: "measurement"
-    name: ${name}_power_close
     filters:
       - multiply: -1
-      - or:
-        - delta: 1
-        - heartbeat: 60s
+      - delta: 1
 
-  - platform: resistance
-    id: temp_resistance_reading
-    sensor: temp_analog_reading
-    configuration: DOWNSTREAM
-    resistor: 32kOhm
-  - platform: adc
-    id: temp_analog_reading
-    pin: A0
+  - platform: template
+    id: power
+    name: ${name}_power
+    unit_of_measurement: "W"
+    device_class: "power"
+    state_class: "measurement"
+    lambda: |-
+      return (id(power_open).state + id(power_close).state);
+
+  - platform: integration
+    name: ${name}_total_energy
+    unit_of_measurement: 'kWh'
+    integration_method: right
+    time_unit: min
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
+    sensor: power
+    filters:
+      - multiply: 0.001
 
 switch:
   - platform: gpio
@@ -210,23 +203,11 @@ binary_sensor:
             switch.is_on: reverse_switch
           then:
             - cover.close: cvr
-            - binary_sensor.template.publish:
-                id: switch_close
-                state: true
           else:
             - cover.open: cvr
-            - binary_sensor.template.publish:
-                id: switch_open
-                state: true
     on_release:
       then:
         - cover.stop: cvr
-        - binary_sensor.template.publish:
-            id: switch_open
-            state: false
-        - binary_sensor.template.publish:
-            id: switch_close
-            state: false
 
   - platform: gpio
     id: switch_b
@@ -238,36 +219,18 @@ binary_sensor:
           switch.is_on: reverse_switch
         then:
           - cover.open: cvr
-          - binary_sensor.template.publish:
-              id: switch_open
-              state: true
         else:
           - cover.close: cvr
-          - binary_sensor.template.publish:
-              id: switch_close
-              state: true
     on_release:
       then:
         - cover.stop: cvr
-        - binary_sensor.template.publish:
-            id: switch_open
-            state: false
-        - binary_sensor.template.publish:
-            id: switch_close
-            state: false
-
-  - platform: template
-    name: ${name}_switch_open
-    id: switch_open
-
-  - platform: template
-    name: ${name}_switch_close
-    id: switch_close
 
 cover:
   - platform: current_based
     id: cvr
     name: ${name}_cover
+    max_duration: 38s
+    start_sensing_delay: 1s
     open_sensor: current_open
     open_moving_current_threshold: 0.2
     open_obstacle_current_threshold: 0.8
@@ -277,9 +240,9 @@ cover:
         condition:
           switch.is_on: reverse_cover
         then:
-          - switch.turn_on: powered_a
-        else:
           - switch.turn_on: powered_b
+        else:
+          - switch.turn_on: powered_a
 
     close_sensor: current_close
     close_moving_current_threshold: 0.2
@@ -290,9 +253,9 @@ cover:
         condition:
           switch.is_on: reverse_cover
         then:
-          - switch.turn_on: powered_b
-        else:
           - switch.turn_on: powered_a
+        else:
+          - switch.turn_on: powered_b
 
     stop_action:
       - switch.turn_off: powered_a

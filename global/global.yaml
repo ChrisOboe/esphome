@@ -15,7 +15,7 @@ ota:
 
 # only log relevant stuff
 logger:
-#  level: WARN
+  level: WARN
 
 mqtt:
   broker: chump.gob.zone
@@ -23,7 +23,7 @@ mqtt:
   discovery_unique_id_generator: mac
   discovery_object_id_generator: device_name
   log_topic:
-    topic: "esphome/logs"
+    topic: esphome/logs/${name}
     level: WARN
 
 wifi:
