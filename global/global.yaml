@@ -19,7 +19,11 @@ logger:
 
 mqtt:
   broker: chump.gob.zone
-  clean_session: true
+  # clean_session seems to get activated sometimes (2025-03-16)
+  # i don't know the reason yet. lets disable to prevent problems
+  clean_session: false
+  # defaults to 15. maybe it helps
+  keepalive: "15s"
   discovery_unique_id_generator: mac
   discovery_object_id_generator: device_name
   log_topic:
