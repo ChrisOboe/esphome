@@ -1,0 +1,53 @@
+substitutions:
+  name: louder-esp32
+
+<<: !include ../global/global.yaml
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+  build_path: ../build/${name}
+  includes:
+   - louderesp32.h
+  platformio_options:
+     lib_deps: "Wire"
+
+esp32:
+  board: mhetesp32minikit
+
+switch:
+  - platform: custom
+    lambda: |-
+      audo tas5805 = new TAS5805();
+      App.register_component(tas5805);
+      return {tas5805};
+    switches:
+      id: amp
+      name: ${name}_amp
+
+psram:
+  mode: octal
+  speed: 80Mhz
+
+i2c:
+  sda: GPIO21
+  scl: GPIO27
+  scan: True
+  id: i2c_component
+
+i2s_audio:
+  i2s_lrclk_pin: GPIO25
+  i2s_bclk_pin: GPIO26
+
+speaker:
+  - platform: i2s_audio
+    dac_type: external
+    i2s_dout_pin: GPIO22
+
+media_player:
+  - platform: speaker
+    name: ${name}_mediaPlayer
+    mode: stereo
+
+    
+

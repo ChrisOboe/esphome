@@ -30,6 +30,7 @@
             #})
             yq-go
             git-crypt
+            yaml-language-server
           ];
         };
       }
