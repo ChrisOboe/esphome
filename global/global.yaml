@@ -7,6 +7,8 @@ esphome:
 mdns:
   disabled: true
 
+api:
+
 # enable ota update
 # todo: refactor to download updates from a server
 ota:
