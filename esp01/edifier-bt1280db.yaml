@@ -7,7 +7,6 @@ esp8266:
 esphome:
   name: ${name}
   name_add_mac_suffix: true
-  build_path: ../build/${name}
   on_boot:
     priority: 800
     then:

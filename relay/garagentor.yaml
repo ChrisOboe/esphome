@@ -2,7 +2,7 @@ substitutions:
   name: garagentor
   mac_corsa: "54:32:04:85:EE:C6"
   mac_cmax: "54:32:04:85:EB:66"
-!!merge <<: !include ../global/global-mqtt.yaml
+!!merge <<: !include ../global/global.yaml
 logger:
 esp32:
   # todo: wrong board. this expects 4mb real has 2mb

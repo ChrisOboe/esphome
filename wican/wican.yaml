@@ -1,7 +1,6 @@
 esphome:
   name: ${name}
   name_add_mac_suffix: true
-  build_path: ../build/${name}
 mdns:
   disabled: true
 # enable hass api TODO: mqtt
@@ -115,7 +114,8 @@ sensor:
               if (id(ble).is_active() && esp_ble_tx_power_get(ESP_BLE_PWR_TYPE_ADV) != ESP_PWR_LVL_P9) {
                 esp_err_t err = esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
                 if (err != ESP_OK) {
-                  ESP_LOGW(TAG, "esp_ble_tx_power_set failed: %s", esp_err_to_name(err));
+                  // TODO: esphome logging
+                  //ESP_LOGW(TAG, "esp_ble_tx_power_set failed: %s", esp_err_to_name(err));
                 }
               }
 

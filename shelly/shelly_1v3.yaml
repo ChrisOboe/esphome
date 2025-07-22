@@ -42,7 +42,7 @@ binary_sensor:
             - or:
                 - switch.is_on: standalone_mode
                 - not:
-                    mqtt.connected:
+                    api.connected:
         then:
           - switch.toggle: powered
     on_state:
@@ -53,6 +53,6 @@ binary_sensor:
             - or:
                 - switch.is_on: standalone_mode
                 - not:
-                    mqtt.connected:
+                    api.connected:
         then:
           - switch.toggle: powered
