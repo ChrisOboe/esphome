@@ -1,10 +1,7 @@
 substitutions:
   name: shelly_2plus_dummy
-
 logger:
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp32:
   board: esp32doit-devkit-v1
   framework:

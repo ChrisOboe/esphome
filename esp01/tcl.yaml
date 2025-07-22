@@ -1,12 +1,9 @@
 substitutions:
   name: "tcl"
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp8266:
   board: esp01_1m
   restore_from_flash: false
-
 esphome:
   name: ${name}
   name_add_mac_suffix: true
@@ -18,7 +15,6 @@ esphome:
           address: 0xE710
           command: 0xF50A
           command_repeats: 1
-
 remote_transmitter:
   pin:
     number: GPIO02
@@ -26,43 +22,42 @@ remote_transmitter:
     mode:
       output: true
   carrier_duty_percent: 100%
-
 button:
-#  - platform: template
-#    name: ${name}_source_bluetooth
-#    on_press:
-#      - remote_transmitter.transmit_nec:
-#          address: 0xE710
-#          command: 0xF10E
-#          command_repeats: 1
-#  - platform: template
-#    name: ${name}_source_optical
-#    on_press:
-#      - remote_transmitter.transmit_nec:
-#          address: 0xE710
-#          command: 0xF20D
-#          command_repeats: 1
-#  - platform: template
-#    name: ${name}_source_1
-#    on_press:
-#      - remote_transmitter.transmit_nec:
-#          address: 0xE710
-#          command: 0xF50A
-#          command_repeats: 1
-#  - platform: template
-#    name: ${name}_source_2
-#    on_press:
-#      - remote_transmitter.transmit_nec:
-#          address: 0xE710
-#          command: 0xEA15
-#          command_repeats: 1
-#  - platform: template
-#    name: ${name}_sourc_coax
-#    on_press:
-#      - remote_transmitter.transmit_nec:
-#          address: 0xE710
-#          command: 0xE916
-#          command_repeats: 1
+  #  - platform: template
+  #    name: ${name}_source_bluetooth
+  #    on_press:
+  #      - remote_transmitter.transmit_nec:
+  #          address: 0xE710
+  #          command: 0xF10E
+  #          command_repeats: 1
+  #  - platform: template
+  #    name: ${name}_source_optical
+  #    on_press:
+  #      - remote_transmitter.transmit_nec:
+  #          address: 0xE710
+  #          command: 0xF20D
+  #          command_repeats: 1
+  #  - platform: template
+  #    name: ${name}_source_1
+  #    on_press:
+  #      - remote_transmitter.transmit_nec:
+  #          address: 0xE710
+  #          command: 0xF50A
+  #          command_repeats: 1
+  #  - platform: template
+  #    name: ${name}_source_2
+  #    on_press:
+  #      - remote_transmitter.transmit_nec:
+  #          address: 0xE710
+  #          command: 0xEA15
+  #          command_repeats: 1
+  #  - platform: template
+  #    name: ${name}_sourc_coax
+  #    on_press:
+  #      - remote_transmitter.transmit_nec:
+  #          address: 0xE710
+  #          command: 0xE916
+  #          command_repeats: 1
   - platform: template
     name: ${name}_on_off
     on_press:

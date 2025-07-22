@@ -1,19 +1,15 @@
 substitutions:
   name: shelly_1v3
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-
 switch:
   - platform: gpio
     id: powered
     name: ${name}_powered
     pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: template
     id: enable_button
     name: ${name}_enable_button
@@ -32,7 +28,6 @@ switch:
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_ON
-
 binary_sensor:
   - platform: gpio
     pin:
@@ -45,9 +40,9 @@ binary_sensor:
           and:
             - switch.is_on: enable_button
             - or:
-              - switch.is_on: standalone_mode
-              - not:
-                  mqtt.connected:
+                - switch.is_on: standalone_mode
+                - not:
+                    mqtt.connected:
         then:
           - switch.toggle: powered
     on_state:
@@ -56,8 +51,8 @@ binary_sensor:
           and:
             - switch.is_on: enable_switch
             - or:
-              - switch.is_on: standalone_mode
-              - not:
-                  mqtt.connected:
+                - switch.is_on: standalone_mode
+                - not:
+                    mqtt.connected:
         then:
           - switch.toggle: powered

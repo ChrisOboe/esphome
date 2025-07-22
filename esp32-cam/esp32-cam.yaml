@@ -1,32 +1,24 @@
 substitutions:
   name: esp32_cam
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp32:
   board: node32s
   #board: esp32cam
   framework:
     type: esp-idf # doesn't support cam
-
 psram:
   speed: 120MHz
-
 #logger:
 #  level: DEBUG
-
 api:
-
 output:
   - platform: gpio
     pin: GPIO4
     id: gpio_4
-
 light:
   - platform: binary
     output: gpio_4
     name: "${name}_light"
-
 esp32_camera:
   id: "camera"
   name: "${name}_camera"

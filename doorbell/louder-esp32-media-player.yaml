@@ -1,5 +1,4 @@
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 external_components:
   - source:
       type: git
@@ -17,7 +16,6 @@ external_components:
       - voice_assistant
       - voice_kit
     refresh: 0s
-
 esphome:
   name: "doorbell"
   name_add_mac_suffix: true
@@ -28,23 +26,19 @@ esphome:
   on_boot:
     priority: 800
     then:
-    ## Set a volume limit just to be safe...
-    - media_player.volume_set:
-        id: louderesp32
-        volume: 20%
-
+      ## Set a volume limit just to be safe...
+      - media_player.volume_set:
+          id: louderesp32
+          volume: 20%
 esp32:
   board: mhetesp32minikit
   framework:
     type: esp-idf
-
 psram:
   mode: octal
   speed: 80MHz
-
 logger:
   level: DEBUG
-  
 switch:
   - platform: custom
     lambda: |-
@@ -53,17 +47,14 @@ switch:
       return {tas5805};
     switches:
       name: "Enable Amp"
-
 i2c:
   sda: GPIO21
   scl: GPIO27
   scan: True
   id: i2c_component
-
 i2s_audio:
   i2s_lrclk_pin: GPIO25
   i2s_bclk_pin: GPIO26
-
 media_player:
   - platform: nabu
     name: mediaPlayer

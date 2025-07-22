@@ -1,9 +1,6 @@
 substitutions:
   name: d1_mini32
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 logger:
-
 esp32:
   board: wemos_d1_mini32

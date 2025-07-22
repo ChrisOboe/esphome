@@ -1,4 +1,3 @@
 substitutions:
   name: opel-corsa
-
-<<: !include ./wican.yaml
+!!merge <<: !include ./wican.yaml

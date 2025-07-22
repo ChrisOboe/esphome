@@ -1,21 +1,16 @@
 substitutions:
   name: nous_a1t
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 logger:
-
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-
 output:
   - platform: gpio
     pin:
       number: GPIO13
       inverted: true
     id: output_led
-
 switch:
   - platform: gpio
     id: powered
@@ -28,7 +23,6 @@ switch:
     restore_mode: RESTORE_DEFAULT_ON
     entity_category: config
     optimistic: true
-
 binary_sensor:
   - platform: gpio
     pin:
@@ -42,7 +36,6 @@ binary_sensor:
           switch.is_on: enable_button
         then:
           - switch.toggle: powered
-
 sensor:
   - platform: hlw8012
     sel_pin:
@@ -56,24 +49,24 @@ sensor:
       device_class: "current"
       filters:
         - or:
-          - delta: 0.00434782609 # aequivalent of 1 watt
-          - heartbeat: 60s
+            - delta: 0.00434782609 # aequivalent of 1 watt
+            - heartbeat: 60s
     voltage:
       name: ${name}_voltage
       unit_of_measurement: V
       device_class: "voltage"
       filters:
         - or:
-          - delta: 1
-          - heartbeat: 60s
+            - delta: 1
+            - heartbeat: 60s
     power:
       name: ${name}_power
       unit_of_measurement: W
       device_class: "power"
       filters:
         - or:
-          - delta: 1
-          - heartbeat: 60s
+            - delta: 1
+            - heartbeat: 60s
     change_mode_every: 1
     voltage_divider: 800
     update_interval: 0.5s

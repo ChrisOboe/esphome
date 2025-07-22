@@ -2,42 +2,36 @@ substitutions:
   name: iskra_mt681
   server_id0: 0649534b010722fb024a
   server_id1: 0649534b010722fb0082
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp8266:
   board: nodemcuv2
   restore_from_flash: false
 #  early_pin_init: false
 
 logger:
-    baud_rate: 0 # don't log through uart since we need to use this for comm
-
+  baud_rate: 0 # don't log through uart since we need to use this for comm
 uart:
- - id: uart_0
-   rx_pin: GPIO03
-   baud_rate: 9600
-   data_bits: 8
-   parity: NONE
-   stop_bits: 1
- - id: uart_1
-   rx_pin: GPIO13
-   baud_rate: 9600
-   data_bits: 8
-   parity: NONE
-   stop_bits: 1
-
+  - id: uart_0
+    rx_pin: GPIO03
+    baud_rate: 9600
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
+  - id: uart_1
+    rx_pin: GPIO13
+    baud_rate: 9600
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
 sml:
- - id: sml_0
-   uart_id: uart_0
- - id: sml_1
-   uart_id: uart_1
-
+  - id: sml_0
+    uart_id: uart_0
+  - id: sml_1
+    uart_id: uart_1
 sensor:
-  - <<: !include ../global/wifi_sensor.yaml
+  - !!merge <<: !include ../global/wifi_sensor.yaml
   - platform: uptime
     name: ${name}_uptime
-
   - platform: sml
     sml_id: sml_0
     server_id: ${server_id0}
@@ -78,7 +72,6 @@ sensor:
     name: ${name}_1_power
     unit_of_measurement: W
     device_class: power
-
   - platform: sml
     sml_id: sml_1
     server_id: ${server_id1}
@@ -119,10 +112,8 @@ sensor:
     name: ${name}_2_power
     unit_of_measurement: W
     device_class: power
-
 text_sensor:
-  - <<: !include ../global/wifi_text_sensor.yaml
-
+  - !!merge <<: !include ../global/wifi_text_sensor.yaml
   - platform: sml
     sml_id: sml_0
     server_id: ${server_id0}
@@ -141,7 +132,6 @@ text_sensor:
     obis_code: "129-129:199.130.5"
     name: ${name}_1_publickey
     format: hex
-
   - platform: sml
     sml_id: sml_1
     server_id: ${server_id1}

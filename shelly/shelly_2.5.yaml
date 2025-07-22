@@ -1,16 +1,12 @@
 substitutions:
   name: shelly_25_switch
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-
 i2c:
   sda: GPIO12
   scl: GPIO14
-
 sensor:
   - platform: ade7953_i2c
     irq_pin: GPIO16
@@ -18,37 +14,36 @@ sensor:
       name: ${name}_voltage
       filters:
         - or:
-          - delta: 1
-          - heartbeat: 60s
+            - delta: 1
+            - heartbeat: 60s
     current_a:
       id: current_a
       name: ${name}_current_a
       filters:
         - or:
-          - delta: 0.1
-          - heartbeat: 60s
+            - delta: 0.1
+            - heartbeat: 60s
     current_b:
       id: current_b
       name: ${name}_current_b
       filters:
         - or:
-          - delta: 0.1
-          - heartbeat: 60s
+            - delta: 0.1
+            - heartbeat: 60s
     active_power_a:
       name: ${name}_power_a
       filters:
         - or:
-          - delta: 1
-          - heartbeat:  60s
+            - delta: 1
+            - heartbeat: 60s
     active_power_b:
       name: ${name}_power_b
       filters:
         - multiply: -1
         - or:
-          - delta: 1
-          - heartbeat: 60s
+            - delta: 1
+            - heartbeat: 60s
     update_interval: 0.5s
-
   - platform: ntc
     sensor: temp_resistance_reading
     name: ${name}_temperature
@@ -63,33 +58,27 @@ sensor:
       above: 90
       then:
         - switch.turn_on: _shutdown
-
   - platform: resistance
     id: temp_resistance_reading
     sensor: temp_analog_reading
     configuration: DOWNSTREAM
     resistor: 32kOhm
-
   - platform: adc
     id: temp_analog_reading
     pin: A0
-
 switch:
   - platform: gpio
     id: powered_a
     name: ${name}_powered_a
     pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: gpio
     id: powered_b
     name: ${name}_powered_b
     pin: GPIO15
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: shutdown
     id: _shutdown
-
 binary_sensor:
   - platform: gpio
     pin:
@@ -98,7 +87,6 @@ binary_sensor:
     on_state:
       then:
         - switch.toggle: powered_b
-
   - platform: gpio
     pin:
       number: GPIO5

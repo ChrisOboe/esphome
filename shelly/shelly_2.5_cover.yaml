@@ -1,16 +1,12 @@
 substitutions:
   name: shelly_25_cover
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp8266:
   board: esp01_1m
   restore_from_flash: true
-
 i2c:
   sda: GPIO12
   scl: GPIO14
-
 sensor:
   - platform: resistance
     id: temp_resistance_reading
@@ -35,8 +31,6 @@ sensor:
       above: 90
       then:
         - switch.turn_on: _shutdown
-
-
   - platform: ade7953_i2c
     irq_pin: GPIO16
     update_interval: 0.5s
@@ -58,7 +52,6 @@ sensor:
             sensor.template.publish:
               id: current_open
               state: !lambda return x;
-
     current_b:
       id: current_b
       on_raw_value:
@@ -73,7 +66,6 @@ sensor:
             sensor.template.publish:
               id: current_close
               state: !lambda return x;
-
     active_power_a:
       id: power_a
       on_raw_value:
@@ -88,7 +80,6 @@ sensor:
             sensor.template.publish:
               id: power_open
               state: !lambda return x;
-
     active_power_b:
       id: power_b
       on_raw_value:
@@ -103,22 +94,18 @@ sensor:
             sensor.template.publish:
               id: power_close
               state: !lambda return x;
-
-
   - platform: template
     id: current_open
     name: ${name}_current_open
     unit_of_measurement: "A"
     device_class: "current"
     state_class: "measurement"
-
   - platform: template
     id: current_close
     name: ${name}_current_close
     unit_of_measurement: "A"
     device_class: "current"
     state_class: "measurement"
-
   - platform: template
     id: power_open
     name: ${name}_power_open
@@ -127,7 +114,6 @@ sensor:
     state_class: "measurement"
     filters:
       - delta: 1
-
   - platform: template
     id: power_close
     name: ${name}_power_close
@@ -137,7 +123,6 @@ sensor:
     filters:
       - multiply: -1
       - delta: 1
-
   - platform: template
     id: power
     name: ${name}_power
@@ -146,7 +131,6 @@ sensor:
     state_class: "measurement"
     lambda: |-
       return (id(power_open).state + id(power_close).state);
-
   - platform: integration
     name: ${name}_total_energy
     unit_of_measurement: 'kWh'
@@ -158,7 +142,6 @@ sensor:
     sensor: power
     filters:
       - multiply: 0.001
-
 switch:
   - platform: gpio
     id: powered_a
@@ -166,31 +149,26 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: &interlock [powered_a, powered_b]
     interlock_wait_time: 200ms
-
   - platform: gpio
     id: powered_b
     pin: GPIO4
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: *interlock
     interlock_wait_time: 200ms
-
   - platform: template
     id: reverse_switch
     name: ${name}_reverse_switch
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: template
     id: reverse_cover
     name: ${name}_reverse_cover
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: shutdown
     id: _shutdown
-
 binary_sensor:
   - platform: gpio
     id: switch_a
@@ -208,7 +186,6 @@ binary_sensor:
     on_release:
       then:
         - cover.stop: cvr
-
   - platform: gpio
     id: switch_b
     pin:
@@ -224,7 +201,6 @@ binary_sensor:
     on_release:
       then:
         - cover.stop: cvr
-
 cover:
   - platform: current_based
     id: cvr
@@ -243,7 +219,6 @@ cover:
           - switch.turn_on: powered_b
         else:
           - switch.turn_on: powered_a
-
     close_sensor: current_close
     close_moving_current_threshold: 0.2
     close_obstacle_current_threshold: 0.8
@@ -256,7 +231,6 @@ cover:
           - switch.turn_on: powered_a
         else:
           - switch.turn_on: powered_b
-
     stop_action:
       - switch.turn_off: powered_a
       - switch.turn_off: powered_b

@@ -2,22 +2,17 @@ esphome:
   name: ${name}
   name_add_mac_suffix: true
   build_path: ../build/${name}
-
 mdns:
   disabled: true
-
 # enable hass api TODO: mqtt
 api:
   encryption:
-      key: "oz8pL8c0INEcq+dL//08pwPrtI+fa7O4cHsEcELqKzM="
-
+    key: "oz8pL8c0INEcq+dL//08pwPrtI+fa7O4cHsEcELqKzM="
 # enable ota update
 ota:
   - platform: esphome
     password: "monitor"
-
 logger:
-
 wifi:
   id: wlan
   domain: ".gob.zone"
@@ -29,28 +24,23 @@ wifi:
       password: "pfefferpapageiknotenhaken"
     - ssid: "kolossus"
       password: "penisfisch"
-
 esp32:
   variant: ESP32C3
   board: esp32-c3-devkitm-1
   framework:
     type: esp-idf
-
 #logger:
 #  level: INFO #NONE# ERROR #INFO #DEBUG  #VERBOSE
 #  #baud_rate: 0 #to disable logging via UART
 #  logs:
 #    text_sensor : ERROR
 #    canbus: INFO
-
 esp32_ble:
   id: ble
   io_capability: none
-
 esp32_ble_server:
   id: bles
   manufacturer_data: [0xFF, 0xFF, 0xF1, 0x00]
-
 output:
   - id: blue_led_output
     platform: gpio
@@ -61,7 +51,6 @@ output:
   - id: yellow_led_output
     platform: gpio
     pin: {number: 9, inverted: true}
-
 light:
   - platform: binary
     id: blue_led
@@ -78,7 +67,6 @@ light:
     output: yellow_led_output
     restore_mode: ALWAYS_OFF
     name: "yellow"
-
 canbus:
   - platform: esp32_can
     tx_pin: 0
@@ -99,14 +87,12 @@ canbus:
           - lambda: |-
               if (x.size() >= 5)
                 id(steer_angle).publish_state((float)((int16_t)(x[1]<< 8) + x[0])*1.5);
-
 sensor:
   - platform: template
     id: steer_angle
     name: '${name} Steering Angle'
     unit_of_measurement: '°'
     accuracy_decimals: 0
-
   - platform: adc
     id: starter_battery_voltage
     name: '${name} Battery Voltage'
@@ -149,7 +135,6 @@ sensor:
                uint8_t* float_data = (uint8_t*)&f_value;
                id(bles).set_manufacturer_data({0xFF,0xFF,0xF9,float_data[0], float_data[1], float_data[2], float_data[3]});
             }
-           
 deep_sleep:
   id: ds
   run_duration: 8s

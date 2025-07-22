@@ -1,7 +1,20 @@
 {
   inputs = {
+    # dependencies
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # helpers
     flake-utils.url = "github:numtide/flake-utils";
+
+    # development
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -9,30 +22,41 @@
       self,
       nixpkgs,
       flake-utils,
+      treefmt-nix,
+      git-hooks,
+      ...
     }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        devShell = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            esphome
-            # needs at least 2025 version since otherwise mqtt wont be unique
-            #(esphome.overrideAttrs {
-            #  src = fetchFromGitHub {
-            #    owner = "esphome";
-            #    repo = "esphome";
-            #    rev = "refs/tags/2025.2.0b3";
-            #    hash = "sha256-s8R/0QK6tuOzy8wllrHVU5NkkoNH4wtx04dPWIrUXNs=";
-            #  };
-            #})
-            yq-go
-            git-crypt
-            yaml-language-server
-          ];
+    let
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+      };
+
+      treefmtEval = treefmt-nix.lib.evalModule pkgs {
+        projectRootFile = "flake.nix";
+        programs = {
+          nixfmt.enable = true;
+          statix.enable = true;
+          yamlfmt.enable = true;
         };
-      }
-    );
+      };
+    in
+    {
+      formatter.x86_64-linux = treefmtEval.config.build.wrapper;
+      checks.x86_64-linux = {
+        format-check = treefmtEval.config.build.check self;
+        pre-commit-check = git-hooks.lib.x86_64-linux.run {
+          src = ./.;
+          hooks = {
+            statix.enable = true;
+          };
+        };
+      };
+
+      devShells.x86_64-linux.default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          esphome
+          git-crypt
+        ];
+      };
+    };
 }

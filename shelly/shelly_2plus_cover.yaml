@@ -1,17 +1,13 @@
 substitutions:
   name: shelly_2plus_cover
-
-<<: !include ../global/global.yaml
-
+!!merge <<: !include ../global/global.yaml
 esp32:
   board: esp32doit-devkit-v1
   framework:
     type: esp-idf
-
 i2c:
   sda: GPIO26
   scl: GPIO25
-
 sensor:
   - platform: ade7953_i2c
     irq_pin: GPIO27
@@ -20,8 +16,8 @@ sensor:
       name: ${name}_voltage
       filters:
         - or:
-          - delta: 1
-          - heartbeat: 60s
+            - delta: 1
+            - heartbeat: 60s
     current_a:
       id: current_a
       filters:
@@ -38,7 +34,6 @@ sensor:
             sensor.template.publish:
               id: current_close
               state: !lambda return x;
-
     current_b:
       id: current_b
       filters:
@@ -55,7 +50,6 @@ sensor:
             sensor.template.publish:
               id: current_open
               state: !lambda return x;
-
     active_power_a:
       id: power_a
       filters:
@@ -72,7 +66,6 @@ sensor:
             sensor.template.publish:
               id: power_close
               state: !lambda return x;
-
     active_power_b:
       id: power_b
       filters:
@@ -89,7 +82,6 @@ sensor:
             sensor.template.publish:
               id: power_open
               state: !lambda return x;
-
   - platform: ntc
     sensor: temp_resistance_reading
     name: ${name}_temperature
@@ -105,7 +97,6 @@ sensor:
       above: 90
       then:
         - switch.turn_on: _shutdown
-
   - platform: template
     id: current_open
     name: ${name}_current_open
@@ -116,9 +107,8 @@ sensor:
       - lambda: !lambda |-
           return x < 0.0 ? 0.0 : x;
       - or:
-        - delta: 0.00434782608
-        - heartbeat: 60s
-
+          - delta: 0.00434782608
+          - heartbeat: 60s
   - platform: template
     id: current_close
     name: ${name}_current_close
@@ -129,9 +119,8 @@ sensor:
       - lambda: !lambda |-
           return x < 0.0 ? 0.0 : x;
       - or:
-        - delta: 0.00434782608
-        - heartbeat: 60s
-
+          - delta: 0.00434782608
+          - heartbeat: 60s
   - platform: template
     id: power_open
     name: ${name}_power_open
@@ -143,9 +132,8 @@ sensor:
       - lambda: !lambda |-
           return x < 0.0 ? 0.0 : x;
       - or:
-        - delta: 1
-        - heartbeat:  60s
-
+          - delta: 1
+          - heartbeat: 60s
   - platform: template
     id: power_close
     unit_of_measurement: "W"
@@ -157,9 +145,8 @@ sensor:
       - lambda: !lambda |-
           return x < 0.0 ? 0.0 : x;
       - or:
-        - delta: 1
-        - heartbeat: 60s
-
+          - delta: 1
+          - heartbeat: 60s
   - platform: resistance
     id: temp_resistance_reading
     sensor: temp_analog_reading
@@ -169,7 +156,6 @@ sensor:
     id: temp_analog_reading
     pin: GPIO35
     attenuation: 11db
-
 # led
 output:
   - platform: gpio
@@ -177,7 +163,6 @@ output:
     pin:
       number: GPIO0
       inverted: true
-
 switch:
   - platform: gpio
     id: powered_a
@@ -185,31 +170,26 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: &interlock [powered_a, powered_b]
     interlock_wait_time: 200ms
-
   - platform: gpio
     id: powered_b
     pin: GPIO12
     restore_mode: RESTORE_DEFAULT_OFF
     interlock: *interlock
     interlock_wait_time: 200ms
-
   - platform: template
     id: reverse_switch
     name: ${name}_reverse_switch
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: template
     id: reverse_cover
     name: ${name}_reverse_cover
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_OFF
-
   - platform: shutdown
     id: _shutdown
-
 binary_sensor:
   - platform: gpio
     id: switch_a
@@ -239,7 +219,6 @@ binary_sensor:
         - binary_sensor.template.publish:
             id: switch_close
             state: false
-
   - platform: gpio
     id: switch_b
     pin:
@@ -267,15 +246,12 @@ binary_sensor:
         - binary_sensor.template.publish:
             id: switch_close
             state: false
-
   - platform: template
     name: ${name}_switch_open
     id: switch_open
-
   - platform: template
     name: ${name}_switch_close
     id: switch_close
-
 cover:
   - platform: current_based
     id: cvr
@@ -292,7 +268,6 @@ cover:
           - switch.turn_on: powered_a
         else:
           - switch.turn_on: powered_b
-
     close_sensor: current_close
     close_moving_current_threshold: 0.2
     close_obstacle_current_threshold: 0.8
@@ -305,7 +280,6 @@ cover:
           - switch.turn_on: powered_b
         else:
           - switch.turn_on: powered_a
-
     stop_action:
       - switch.turn_off: powered_a
       - switch.turn_off: powered_b

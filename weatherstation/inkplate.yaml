@@ -1,19 +1,15 @@
 substitutions:
   name: inkplate
-
-<<: !include ../global/global.yaml
-<<: !include ../global/esp32.yaml
-
+!!merge <<: !include ../global/global.yaml
+!!merge <<: !include ../global/esp32.yaml
 esp32:
   board: esp-wrover-kit
-
 i2c:
 bme680_bsec:
   address: 0x77
 mcp23017:
   - id: mcp23017_hub
     address: 0x20
-
 switch:
   - platform: gpio
     id: battery_read_mosfet
@@ -21,20 +17,18 @@ switch:
       mcp23xxx: mcp23017_hub
       number: 9
       inverted: true
-
 sun:
   latitude: 49.4925
   longitude: 9.77361
-
 sensor:
-# global
-  - <<: !include ../global/wifi_sensor.yaml
+  # global
+  - !!merge <<: !include ../global/wifi_sensor.yaml
   - platform: debug
     free:
       name: ${name}_heap_free
   - platform: uptime
     name: ${name}_uptime
-# device specific
+    # device specific
   - platform: bme680_bsec
     temperature:
       id: temperature
@@ -57,21 +51,21 @@ sensor:
   - platform: sun
     id: sun_elevation
     type: elevation
-#  - platform: adc
-#    id: battery_voltage
-#    update_interval: never
-#    attenuation: auto
-#    pin: 35
-#  - platform: template
-#    name: "Inkplate Battery Voltage"
-#    lambda: |-
-#      id(battery_read_mosfet).turn_on();
-#      delay(1);
-#      float adc = id(battery_voltage).sample();
-#      id(battery_read_mosfet).turn_off();
-#      return adc;
-#    filters:
-#      - multiply: 2
+    #  - platform: adc
+    #    id: battery_voltage
+    #    update_interval: never
+    #    attenuation: auto
+    #    pin: 35
+    #  - platform: template
+    #    name: "Inkplate Battery Voltage"
+    #    lambda: |-
+    #      id(battery_read_mosfet).turn_on();
+    #      delay(1);
+    #      float adc = id(battery_voltage).sample();
+    #      id(battery_read_mosfet).turn_off();
+    #      return adc;
+    #    filters:
+    #      - multiply: 2
   - platform: homeassistant
     id: out_temperature
     entity_id: weather.konigshofen_wetter
@@ -94,10 +88,9 @@ sensor:
     id: out_windspeed
     entity_id: weather.konigshofen_wetter
     attribute: wind_speed
-
 text_sensor:
-# global
-  - <<: !include ../global/wifi_text_sensor.yaml
+  # global
+  - !!merge <<: !include ../global/wifi_text_sensor.yaml
   - platform: debug
     device:
       name: ${name}_deviceinfo
@@ -113,7 +106,7 @@ text_sensor:
     update_interval: 600s
     lambda: |-
       return {"Weatherstation"};
-# device specific
+    # device specific
   - platform: template
     id: weekday
     update_interval: 60s
@@ -141,39 +134,32 @@ text_sensor:
       entity_category: diagnostic
       id: iaq_accuracy
       name: ${name}_iaq_accuracy
-
   - platform: homeassistant
     id: weather
     entity_id: weather.konigshofen_wetter
   - platform: homeassistant
     id: moonphase
     entity_id: sensor.moon_phase
-
 binary_sensor:
   - platform: status
     id: system_status
-
 time:
   - platform: sntp
     id: esptime
-
 font:
   - id: font_clock
     file: "gfonts://Tulpen One"
     #file: "fonts/Tall Film.ttf"
     size: 300
     glyphs: "0123456789:"
-
   - id: font_date
     file: "gfonts://Tulpen One"
     size: 190
     glyphs: "0123456789."
-
   - id: font_weekday
     file: "gfonts://Tulpen One"
     size: 100
     glyphs: "MontagDieswchrFSm"
-
   - id: font_values_huge
     file:
       family: "Tulpen One"
@@ -182,7 +168,6 @@ font:
     #file: "fonts/Bully.ttf"
     size: 140
     glyphs: "-0123456789.°Cm/s%PpaNn"
-
   - id: font_values
     file:
       family: "Tulpen One"
@@ -190,7 +175,6 @@ font:
       weight: regular
     size: 100
     glyphs: "-0123456789.°Cm/s%PpaNn"
-
   - id: font_description
     file:
       family: "Yanone Kaffeesatz"
@@ -198,7 +182,6 @@ font:
       weight: 600
     size: 64
     glyphs: "abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890.,:;-_°!§$%&/()=? "
-
   - id: font_weather
     file: fonts/materialdesignicons-webfont.ttf
     size: 250
@@ -233,7 +216,6 @@ font:
       - "\U000F0F38" # weather-tornado
       - "\U000F059D" # weather-windy
       - "\U000F059E" # weather-windy-variant
-
   - id: font_moonphases
     file: fonts/materialdesignicons-webfont.ttf
     size: 250
@@ -246,7 +228,6 @@ font:
       - "\U000F0F66" # moon-waning-gibbous
       - "\U000F0F67" # moon-waxing-crescent
       - "\U000F0F68" # moon-waxing-gibbous
-
 #  - id: font_icons
 #    file: fonts/materialdesignicons-webfont.ttf
 #    size: 48
@@ -258,159 +239,156 @@ font:
 #      - "\U000F07E4" # co2
 #      - "\U000F15FA" # windsock
 #      - "\U000F0BAC" # molecule
-
 display:
-- platform: inkplate6
-  id: inkplate_display
-  greyscale: true
-  partial_updating: true
-  auto_clear_enabled: false
-  full_update_every: 60
-  rotation: 0
-  update_interval: 60s
+  - platform: inkplate6
+    id: inkplate_display
+    greyscale: true
+    partial_updating: true
+    auto_clear_enabled: false
+    full_update_every: 60
+    rotation: 0
+    update_interval: 60s
+    ckv_pin: 32
+    sph_pin: 33
+    gmod_pin:
+      mcp23xxx: mcp23017_hub
+      number: 1
+    gpio0_enable_pin:
+      mcp23xxx: mcp23017_hub
+      number: 8
+    oe_pin:
+      mcp23xxx: mcp23017_hub
+      number: 0
+    spv_pin:
+      mcp23xxx: mcp23017_hub
+      number: 2
+    powerup_pin:
+      mcp23xxx: mcp23017_hub
+      number: 4
+    wakeup_pin:
+      mcp23xxx: mcp23017_hub
+      number: 3
+    vcom_pin:
+      mcp23xxx: mcp23017_hub
+      number: 5
+    lambda: |-
+      #include <map>
+      std::map<std::string, std::string> weather_icon_map {
+        {"cloudy", "\U000F0590"},
+        {"cloudy-alert", "\U000F0F2F"},
+        {"cloudy-arrow-right", "\U000F0E6E"},
+        {"fog", "\U000F0591"},
+        {"hail", "\U000F0592"},
+        {"hazy", "\U000F0F30"},
+        {"hurricane", "\U000F0898"},
+        {"lightning", "\U000F0593"},
+        {"lightning-rainy", "\U000F067E"},
+        {"night", "\U000F0594"},
+        {"night-partly-cloudy", "\U000F0F31"},
+        {"partlycloudy", "\U000F0595"},
+        {"partly-lightning", "\U000F0F32"},
+        {"partly-rainy", "\U000F0F33"},
+        {"partly-snowy", "\U000F0F34"},
+        {"partly-snowy-rainy", "\U000F0F35"},
+        {"pouring", "\U000F0596"},
+        {"rainy", "\U000F0597"},
+        {"snowy", "\U000F0598"},
+        {"snowy-heavy", "\U000F0F36"},
+        {"snowy-rainy", "\U000F067F"},
+        {"sunny", "\U000F0599"},
+        {"sunny-alert", "\U000F0F37"},
+        {"sunny-off", "\U000F14E4"},
+        {"sunset", "\U000F059A"},
+        {"sunset-down", "\U000F059B"},
+        {"sunset-up", "\U000F059C"},
+        {"tornado", "\U000F0F38"},
+        {"windy", "\U000F059D"},
+        {"windy-variant", "\U000F059E"},
+      };
 
-  ckv_pin: 32
-  sph_pin: 33
-  gmod_pin:
-    mcp23xxx: mcp23017_hub
-    number: 1
-  gpio0_enable_pin:
-    mcp23xxx: mcp23017_hub
-    number: 8
-  oe_pin:
-    mcp23xxx: mcp23017_hub
-    number: 0
-  spv_pin:
-    mcp23xxx: mcp23017_hub
-    number: 2
-  powerup_pin:
-    mcp23xxx: mcp23017_hub
-    number: 4
-  wakeup_pin:
-    mcp23xxx: mcp23017_hub
-    number: 3
-  vcom_pin:
-    mcp23xxx: mcp23017_hub
-    number: 5
+      std::map<std::string, std::string> moon_icon_map {
+        {"first_quarter", "\U000F0F61"},
+        {"full_moon", "\U000F0F62"},
+        {"last_quarter", "\U000F0F63"},
+        {"new", "\U000F0F64"},
+        {"waning_crescent", "\U000F0F65"},
+        {"waning_gibbous", "\U000F0F66"},
+        {"waxing_crescent", "\U000F0F67"},
+        {"waxing_gibbous", "\U000F0F68"},
+      };
 
-  lambda: |-
-    #include <map>
-    std::map<std::string, std::string> weather_icon_map {
-      {"cloudy", "\U000F0590"},
-      {"cloudy-alert", "\U000F0F2F"},
-      {"cloudy-arrow-right", "\U000F0E6E"},
-      {"fog", "\U000F0591"},
-      {"hail", "\U000F0592"},
-      {"hazy", "\U000F0F30"},
-      {"hurricane", "\U000F0898"},
-      {"lightning", "\U000F0593"},
-      {"lightning-rainy", "\U000F067E"},
-      {"night", "\U000F0594"},
-      {"night-partly-cloudy", "\U000F0F31"},
-      {"partlycloudy", "\U000F0595"},
-      {"partly-lightning", "\U000F0F32"},
-      {"partly-rainy", "\U000F0F33"},
-      {"partly-snowy", "\U000F0F34"},
-      {"partly-snowy-rainy", "\U000F0F35"},
-      {"pouring", "\U000F0596"},
-      {"rainy", "\U000F0597"},
-      {"snowy", "\U000F0598"},
-      {"snowy-heavy", "\U000F0F36"},
-      {"snowy-rainy", "\U000F067F"},
-      {"sunny", "\U000F0599"},
-      {"sunny-alert", "\U000F0F37"},
-      {"sunny-off", "\U000F14E4"},
-      {"sunset", "\U000F059A"},
-      {"sunset-down", "\U000F059B"},
-      {"sunset-up", "\U000F059C"},
-      {"tornado", "\U000F0F38"},
-      {"windy", "\U000F059D"},
-      {"windy-variant", "\U000F059E"},
-    };
+      std::map<std::string, std::string> weather_translations {
+           {"partlycloudy", "teilweiße Bewölkt"},
+           {"lightning-rainy", "Gewitterregen"},
+           {"snowy-rainy", "Schneeregen"},
+           {"clear-night", "klare Nacht"},
+           {"windy-variant", "Wind und Wolken"},
+           {"cloudy", "Bewölkt"},
+           {"exceptional", "Unbekannt"},
+           {"fog", "Nebel"},
+           {"hail", "Hagel"},
+           {"lightning", "Gewitter"},
+           {"pouring", "starker Regen"},
+           {"rainy", "Regen"},
+           {"snowy", "Schnee"},
+           {"sunny", "Sonnenschein"},
+           {"windy", "Wind"},
+      };
 
-    std::map<std::string, std::string> moon_icon_map {
-      {"first_quarter", "\U000F0F61"},
-      {"full_moon", "\U000F0F62"},
-      {"last_quarter", "\U000F0F63"},
-      {"new", "\U000F0F64"},
-      {"waning_crescent", "\U000F0F65"},
-      {"waning_gibbous", "\U000F0F66"},
-      {"waxing_crescent", "\U000F0F67"},
-      {"waxing_gibbous", "\U000F0F68"},
-    };
+      esphome::Color colorbg = id(sun_elevation).state <= 0 ? COLOR_OFF : COLOR_ON;
+      esphome::Color colorfg = id(sun_elevation).state <= 0 ? COLOR_ON : COLOR_OFF;
 
-    std::map<std::string, std::string> weather_translations {
-         {"partlycloudy", "teilweiße Bewölkt"},
-         {"lightning-rainy", "Gewitterregen"},
-         {"snowy-rainy", "Schneeregen"},
-         {"clear-night", "klare Nacht"},
-         {"windy-variant", "Wind und Wolken"},
-         {"cloudy", "Bewölkt"},
-         {"exceptional", "Unbekannt"},
-         {"fog", "Nebel"},
-         {"hail", "Hagel"},
-         {"lightning", "Gewitter"},
-         {"pouring", "starker Regen"},
-         {"rainy", "Regen"},
-         {"snowy", "Schnee"},
-         {"sunny", "Sonnenschein"},
-         {"windy", "Wind"},
-    };
-
-    esphome::Color colorbg = id(sun_elevation).state <= 0 ? COLOR_OFF : COLOR_ON;
-    esphome::Color colorfg = id(sun_elevation).state <= 0 ? COLOR_ON : COLOR_OFF;
-
-    std::string wthr = id(weather).state.c_str();
-    if (id(sun_elevation).state <= 0) {
-      if (wthr == "partlycloudy") {
-        wthr = "night-partly-cloudy";
-      } else if (wthr == "sunny") {
-        wthr = "night";
+      std::string wthr = id(weather).state.c_str();
+      if (id(sun_elevation).state <= 0) {
+        if (wthr == "partlycloudy") {
+          wthr = "night-partly-cloudy";
+        } else if (wthr == "sunny") {
+          wthr = "night";
+        }
       }
-    }
 
-    it.fill(colorbg);
+      it.fill(colorbg);
 
-    it.strftime(160, 120, id(font_clock), colorfg, TextAlign::CENTER, "%H:%M", id(esptime).now());
-    //it.strftime(160, 120, id(font_clock), colorfg, TextAlign::CENTER, "80:69", id(esptime).now());
+      it.strftime(160, 120, id(font_clock), colorfg, TextAlign::CENTER, "%H:%M", id(esptime).now());
+      //it.strftime(160, 120, id(font_clock), colorfg, TextAlign::CENTER, "80:69", id(esptime).now());
 
-    it.strftime(340, -20, id(font_date), colorfg, TextAlign::LEFT, "%d.%m", id(esptime).now());
-    it.printf(340, 130, id(font_weekday), colorfg, TextAlign::LEFT, id(weekday).state.c_str());
-    it.printf(650, 120, id(font_moonphases), colorfg, TextAlign::CENTER, moon_icon_map[id(moonphase).state.c_str()].c_str());
+      it.strftime(340, -20, id(font_date), colorfg, TextAlign::LEFT, "%d.%m", id(esptime).now());
+      it.printf(340, 130, id(font_weekday), colorfg, TextAlign::LEFT, id(weekday).state.c_str());
+      it.printf(650, 120, id(font_moonphases), colorfg, TextAlign::CENTER, moon_icon_map[id(moonphase).state.c_str()].c_str());
 
-    it.printf(170, 350, id(font_weather), colorfg, TextAlign::CENTER, weather_icon_map[wthr].c_str());
-    //it.printf(180, 600-150, id(font_weather), colorfg, TextAlign::CENTER, moon_icon_map[id(moonphase).state.c_str()].c_str());
-    //it.printf(180, 600-24, id(font_text), colorfg, TextAlign::CENTER, weather_translations[id(weather).state.c_str()].c_str());
+      it.printf(170, 350, id(font_weather), colorfg, TextAlign::CENTER, weather_icon_map[wthr].c_str());
+      //it.printf(180, 600-150, id(font_weather), colorfg, TextAlign::CENTER, moon_icon_map[id(moonphase).state.c_str()].c_str());
+      //it.printf(180, 600-24, id(font_text), colorfg, TextAlign::CENTER, weather_translations[id(weather).state.c_str()].c_str());
 
-    // graphs
-    // it.printf(390, 200, id(font_icons), colorfg, TextAlign::LEFT, "\U000F050F"); // temperature
+      // graphs
+      // it.printf(390, 200, id(font_icons), colorfg, TextAlign::LEFT, "\U000F050F"); // temperature
 
-    it.print(340,240,id(font_description), colorfg, TextAlign::LEFT, "Innen");
-    it.printf(340, 270, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f°C", id(temperature).state);
-    it.printf(580, 270, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f%%", id(humidity).state);
+      it.print(340,240,id(font_description), colorfg, TextAlign::LEFT, "Innen");
+      it.printf(340, 270, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f°C", id(temperature).state);
+      it.printf(580, 270, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f%%", id(humidity).state);
 
-    //it.printf(390, 280, id(font_icons), colorfg, TextAlign::LEFT, "\U000F058E"); // humidity
-    it.print(340,420,id(font_description), colorfg, TextAlign::LEFT, "Außen");
-    it.printf(340, 450, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f°C", id(out_temperature).state);
-    it.printf(580, 450, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f%%", id(out_humidity).state);
+      //it.printf(390, 280, id(font_icons), colorfg, TextAlign::LEFT, "\U000F058E"); // humidity
+      it.print(340,420,id(font_description), colorfg, TextAlign::LEFT, "Außen");
+      it.printf(340, 450, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f°C", id(out_temperature).state);
+      it.printf(580, 450, id(font_values_huge), colorfg, TextAlign::LEFT, "%.1f%%", id(out_humidity).state);
 
-    it.printf(10, 480, id(font_values), colorfg, TextAlign::LEFT, "%.1fm/s", id(out_windspeed).state);
-    it.printf(320, 480, id(font_values), colorfg, TextAlign::RIGHT, "%.0fPa", id(out_pressure).state);
+      it.printf(10, 480, id(font_values), colorfg, TextAlign::LEFT, "%.1fm/s", id(out_windspeed).state);
+      it.printf(320, 480, id(font_values), colorfg, TextAlign::RIGHT, "%.0fPa", id(out_pressure).state);
 
-    //it.printf(400, 500, id(font_values), colorfg, TextAlign::LEFT, "%.0fppm", id(co2).state);
-    //it.printf(500, 500, id(font_values), colorfg, TextAlign::LEFT, "%.1fppm", id(voc).state);
+      //it.printf(400, 500, id(font_values), colorfg, TextAlign::LEFT, "%.0fppm", id(co2).state);
+      //it.printf(500, 500, id(font_values), colorfg, TextAlign::LEFT, "%.1fppm", id(voc).state);
 
-    //it.printf(390, 360, id(font_icons), colorfg, TextAlign::LEFT, "\U000F029A");
-    //it.printf(390+48, 360-4, id(font_values), colorfg, TextAlign::LEFT, "%.0fPa", id(pressure).state);
-    //it.printf(390, 420, id(font_icons), colorfg, TextAlign::LEFT, "\U000F059D");
-    //it.printf(390+48, 420-4, id(font_values), colorfg, TextAlign::LEFT, "%.0f IAQ", id(iaq).state);
-    //it.printf(595, 420, id(font_icons), colorfg, TextAlign::LEFT, "\U000F15FA");
-    //it.printf(595+48, 420-4, id(font_values), colorfg, TextAlign::LEFT, "%.1fm/s", id(out_windspeed).state);
-    //it.printf(390, 500, id(font_icons), colorfg, TextAlign::LEFT, "\U000F07E4");
-    //it.printf(390+48, 500-4, id(font_values), colorfg, TextAlign::LEFT, "%.0fppm", id(co2).state);
-    //it.printf(595, 500, id(font_icons), colorfg, TextAlign::LEFT, "\U000F0BAC");
-    //it.printf(595+48, 500-4, id(font_values), colorfg, TextAlign::LEFT, "%.1fppm", id(voc).state);
+      //it.printf(390, 360, id(font_icons), colorfg, TextAlign::LEFT, "\U000F029A");
+      //it.printf(390+48, 360-4, id(font_values), colorfg, TextAlign::LEFT, "%.0fPa", id(pressure).state);
+      //it.printf(390, 420, id(font_icons), colorfg, TextAlign::LEFT, "\U000F059D");
+      //it.printf(390+48, 420-4, id(font_values), colorfg, TextAlign::LEFT, "%.0f IAQ", id(iaq).state);
+      //it.printf(595, 420, id(font_icons), colorfg, TextAlign::LEFT, "\U000F15FA");
+      //it.printf(595+48, 420-4, id(font_values), colorfg, TextAlign::LEFT, "%.1fm/s", id(out_windspeed).state);
+      //it.printf(390, 500, id(font_icons), colorfg, TextAlign::LEFT, "\U000F07E4");
+      //it.printf(390+48, 500-4, id(font_values), colorfg, TextAlign::LEFT, "%.0fppm", id(co2).state);
+      //it.printf(595, 500, id(font_icons), colorfg, TextAlign::LEFT, "\U000F0BAC");
+      //it.printf(595+48, 500-4, id(font_values), colorfg, TextAlign::LEFT, "%.1fppm", id(voc).state);
 
-    if (!id(system_status).state) {
-      it.print(0, 0, id(font_description), colorfg, TextAlign::LEFT, "Offline");
-    }
+      if (!id(system_status).state) {
+        it.print(0, 0, id(font_description), colorfg, TextAlign::LEFT, "Offline");
+      }
